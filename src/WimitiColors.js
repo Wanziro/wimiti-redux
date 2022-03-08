@@ -1,0 +1,16 @@
+module.exports = {
+  blue: '#0D3F88',
+  white: '#FFF',
+  white2: '#f2f2f2',
+  darkWhite: '#ccc',
+  gray: '#808080',
+  lightGray: '#D9D9D9',
+  darkGray: '#3B3838',
+  black: '#000',
+  dark: '#333',
+  darkBtn: '#2A2828',
+  green: '#027339',
+  red: '#730B02',
+  fbLightGray: '#E9EBEE',
+  fbLightBlue: '#00D6FF',
+};
