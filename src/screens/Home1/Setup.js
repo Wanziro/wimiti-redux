@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {
   Image,
   Text,
@@ -10,13 +10,13 @@ import {
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/dist/EvilIcons';
 import Icon2 from 'react-native-vector-icons/dist/Feather';
+import {useSelector} from 'react-redux';
 import WimitiColors from '../../WimitiColors';
-import {UserMainContext} from '../Context/UserContext';
 
 const width = Dimensions.get('window').width;
 
 function Setup() {
-  const context = useContext(UserMainContext);
+  const {fname} = useSelector(state => state.currentUser);
 
   return (
     <View style={{marginTop: 10}}>
@@ -29,7 +29,7 @@ function Setup() {
           marginBottom: 10,
         }}>
         <Text style={{color: WimitiColors.black}}>
-          {context.userFname} setup your account
+          {fname} setup your account
         </Text>
         <Icon name="close" color={WimitiColors.black} size={25} />
       </View>

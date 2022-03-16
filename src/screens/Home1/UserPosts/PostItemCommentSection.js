@@ -1,4 +1,4 @@
-import React, {useEffect, useState, useContext} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   View,
   TextInput,
@@ -11,11 +11,11 @@ import Icon from 'react-native-vector-icons/dist/MaterialCommunityIcons';
 import Icon2 from 'react-native-vector-icons/dist/AntDesign';
 import WimitiColors from '../../../WimitiColors';
 import Axios from 'axios';
-import {UserMainContext} from '../../Context/UserContext';
 import {backendUrl, backendUserImagesUrl} from '../../../Config';
+import {useSelector} from 'react-redux';
 
 const PostItemComment = ({post}) => {
-  const context = useContext(UserMainContext);
+  const {image, fname, id, username} = useSelector(state => state.currentUser);
   const [isSavingComment, setisSavingComment] = useState(false);
   const [comment, setComment] = useState('');
   const handleComment = () => {
@@ -23,8 +23,8 @@ const PostItemComment = ({post}) => {
       setisSavingComment(true);
       Axios.post(backendUrl + '/saveComment', {
         postId: post.id,
-        username: context.username,
-        userId: context.userId,
+        username: username,
+        userId: id,
         comment,
       })
         .then(res => {
@@ -51,9 +51,9 @@ const PostItemComment = ({post}) => {
           }}>
           <View>
             <View>
-              {context.userImage != null && context.userImage.trim() != '' ? (
+              {image != null && image.trim() != '' ? (
                 <Image
-                  source={{uri: backendUserImagesUrl + context.userImage}}
+                  source={{uri: backendUserImagesUrl + image}}
                   style={{height: 40, width: 40, borderRadius: 50}}
                 />
               ) : (
@@ -95,9 +95,9 @@ const PostItemComment = ({post}) => {
           }}>
           <View>
             <View>
-              {context.userImage != null && context.userImage.trim() != '' ? (
+              {image != null && image.trim() != '' ? (
                 <Image
-                  source={{uri: backendUserImagesUrl + context.userImage}}
+                  source={{uri: backendUserImagesUrl + image}}
                   style={{height: 40, width: 40, borderRadius: 50}}
                 />
               ) : (

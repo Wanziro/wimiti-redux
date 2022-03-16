@@ -5,6 +5,8 @@ export const SET_CURRENT_USER_USERNAME = 'SET_CURRENT_USER_USERNAME';
 export const SET_CURRENT_USER_PHONE = 'SET_CURRENT_USER_PHONE';
 export const SET_CURRENT_USER_EMAIL = 'SET_CURRENT_USER_EMAIL';
 export const SET_CURRENT_USER_IMAGE = 'SET_CURRENT_USER_IMAGE';
+export const SET_CURRENT_USER_DESCRIPTION = 'SET_CURRENT_USER_DESCRIPTION';
+export const SET_CURRENT_USER_WORK = 'SET_CURRENT_USER_WORK';
 export const RESET_CURRENT_USER = 'RESET_CURRENT_USER';
 
 export const setCurrentUserFname = fname => dispatch => {
@@ -53,6 +55,20 @@ export const setCurrentUserImage = image => dispatch => {
   dispatch({
     type: SET_CURRENT_USER_IMAGE,
     payload: image,
+  });
+};
+
+export const setCurrentUserDescription = description => dispatch => {
+  dispatch({
+    type: SET_CURRENT_USER_DESCRIPTION,
+    payload: description,
+  });
+};
+
+export const setCurrentUserWork = work => dispatch => {
+  dispatch({
+    type: setCurrentUserWork,
+    payload: work,
   });
 };
 

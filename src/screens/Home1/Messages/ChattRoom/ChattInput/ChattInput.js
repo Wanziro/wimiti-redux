@@ -6,40 +6,25 @@ import Icon3 from 'react-native-vector-icons/dist/Entypo';
 import Icon4 from 'react-native-vector-icons/dist/Ionicons';
 import WimitiColors from '../../../../../WimitiColors';
 import EmojiSelector from 'react-native-emoji-selector';
-import {UserMainContext} from '../../../../Context/UserContext';
+import {useDispatch} from 'react-redux';
+import {setSendMessage} from '../../../../../actions/userMessages';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-function ChattInput({user}) {
-  const context = useContext(UserMainContext);
+function ChattInput({user, currentUsername}) {
+  const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
   const inputRef = useRef(null);
 
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (message.trim() != '') {
       setIsSendingMessage(true);
-      // console.log('sending messages');
-      // db.transaction(function (tx) {
-      //   tx.executeSql(
-      //     'INSERT INTO messages (sender,receiver,message) VALUES(?,?,?)',
-      //     [context.username, user.username, message],
-      //     (tx, results) => {
-      //       console.log('Results', results.rowsAffected);
-      //       setMessage('');
-      //       setIsSendingMessage(false);
-      //     },
-      //     error => {
-      //       setIsSendingMessage(false);
-      //       console.log(error);
-      //     },
-      //   );
-      // });
 
       const newMessage = {
-        sender: context.username,
+        sender: currentUsername,
         receiver: user.username,
         textMessage: message,
         date: new Date(),
@@ -47,11 +32,7 @@ function ChattInput({user}) {
         delivered: false,
         seen: false,
       };
-
-      context.setUserMessagesToBeSent([
-        newMessage,
-        ...context.userMessagesToBeSent,
-      ]);
+      await dispatch(setSendMessage(newMessage));
       setMessage('');
       setIsSendingMessage(false);
     } else {
@@ -92,7 +73,7 @@ function ChattInput({user}) {
                   setShowEmoji(false);
                 } else {
                   Keyboard.dismiss();
-                  setShowEmoji(false);
+                  setShowEmoji(true);
                 }
               }}>
               <View>

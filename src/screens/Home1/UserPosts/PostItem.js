@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Image,
   View,
@@ -29,12 +29,16 @@ import Video from './Video/Video';
 import TimeAgo from 'react-native-timeago';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
 import db from '../../../controller/db';
+import {useSelector} from 'react-redux';
+
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
+  const {image, fname, lname, username} = useSelector(
+    state => state.currentUser,
+  );
   const postContent = JSON.parse(post.content);
-  const context = useContext(UserMainContext);
   const [isDisliking, setIsDisliking] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
   const [userLikedPost, setUserLikedPost] = useState(false);
@@ -58,7 +62,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
   //   setIsLiking(true);
   //   Axios.post(backendUrl + '/handlePostLike', {
   //     postId: post.id,
-  //     username: context.username,
+  //     username: username,
   //     userId: context.userId,
   //   })
   //     .then(res => {
@@ -109,7 +113,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
     setIsDisliking(true);
     Axios.post(backendUrl + '/handlePostDislike', {
       postId: post.id,
-      username: context.username,
+      username: username,
       userId: context.userId,
     })
       .then(res => {
@@ -146,7 +150,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
     setIsDeletingPost(true);
     Axios.post(backendUrl + '/deletePost', {
       postId: post.id,
-      username: context.username,
+      username: username,
       userId: context.userId,
     })
       .then(res => {
@@ -211,7 +215,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
               </TouchableWithoutFeedback>
             }
             onRequestClose={hideMenu}>
-            {context.username !== post.owner.username && (
+            {username !== post.owner.username && (
               <MenuItem onPress={hideMenu}>
                 <Icon5 name="eye-off" /> Hide post
               </MenuItem>
@@ -220,7 +224,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
               <Icon2 name="sharealt" /> Share
             </MenuItem>
 
-            {context.username === post.owner.username && (
+            {username === post.owner.username && (
               <>
                 <MenuItem>
                   <View

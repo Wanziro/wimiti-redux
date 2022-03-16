@@ -1,14 +1,14 @@
-import React, {useContext} from 'react';
+import React from 'react';
 import {View, Text, Image, TouchableWithoutFeedback} from 'react-native';
-import {UserMainContext} from '../../Context/UserContext';
 import Icon from 'react-native-vector-icons/dist/MaterialIcons';
 import Icon2 from 'react-native-vector-icons/dist/AntDesign';
 import Icon3 from 'react-native-vector-icons/dist/Ionicons';
 import WimitiColors from '../../../WimitiColors';
 import {backendUserImagesUrl} from '../../../Config';
+import {useSelector} from 'react-redux';
 
 function Header({navigation}) {
-  const context = useContext(UserMainContext);
+  const {image} = useSelector(state => state.currentUser);
   return (
     <View
       style={{
@@ -46,9 +46,9 @@ function Header({navigation}) {
         <TouchableWithoutFeedback
           onPress={() => navigation.navigate('Profile')}>
           <View>
-            {context.userImage != null && context.userImage.trim() != '' ? (
+            {image != null && image.trim() != '' ? (
               <Image
-                source={{uri: backendUserImagesUrl + context.userImage}}
+                source={{uri: backendUserImagesUrl + image}}
                 style={{height: 30, width: 30, borderRadius: 50}}
               />
             ) : (

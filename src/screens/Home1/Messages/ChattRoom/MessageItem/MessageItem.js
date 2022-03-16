@@ -5,7 +5,6 @@ import Icon from 'react-native-vector-icons/dist/Ionicons';
 import TimeAgo from 'react-native-timeago';
 
 function MessageItem({item, currentUsername, user}) {
-  console.log(item);
   const handleDeliveryIcons = () => {
     if (item.sent == false && item.delivered == false && item.seen == false) {
       return (

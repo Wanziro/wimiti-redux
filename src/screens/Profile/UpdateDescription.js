@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect, useRef} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {
   TextInput,
   View,
@@ -7,28 +7,27 @@ import {
   SafeAreaView,
   Alert,
 } from 'react-native';
-import {UserMainContext} from '../Context/UserContext';
 import WimitiColors from '../../WimitiColors';
 import Axios from 'axios';
 import {backendUrl} from '../../Config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useSelector, useDispatch} from 'react-redux';
+import {setCurrentUserDescription} from '../../actions/currentUser';
 
 function UpdateDescription({navigation}) {
-  const context = useContext(UserMainContext);
+  const dispatch = useDispatch();
+  const {description, id, username} = useSelector(state => state.currentUser);
+
   const [fname, setFname] = useState('');
   const [isSaving, setisSaving] = useState(false);
 
   const fnameRef = useRef();
 
   useEffect(() => {
-    if (context.userDescription != '' && context.userDescription != null) {
-      setFname(context.userDescription);
-    }
+    setFname(description);
   }, []);
 
   const saveChanges = async () => {
-    await AsyncStorage.setItem('user_description', fname);
-    await context.setUserDescription(fname);
+    await dispatch(setCurrentUserDescription(fname));
     navigation.navigate('Profile');
   };
 
@@ -37,8 +36,8 @@ function UpdateDescription({navigation}) {
       setisSaving(true);
       Axios.post(backendUrl + '/updateDescription', {
         description: fname,
-        username: context.username,
-        userId: context.userId,
+        username,
+        userId: id,
       })
         .then(res => {
           console.log(res.data);

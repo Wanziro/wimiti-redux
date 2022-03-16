@@ -8,43 +8,48 @@ import {
   Pressable,
   Dimensions,
 } from 'react-native';
-import {UserMainContext} from '../../../Context/UserContext';
 import WimitiColors from '../../../../WimitiColors';
 import SuggestionsPlaceHolder from './SuggestionsPlaceHolder';
 import Axios from 'axios';
 import {backendUrl, backendUserImagesUrl} from '../../../../Config';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
+import {useSelector, useDispatch} from 'react-redux';
+import {fetchUserSuggestions} from '../../../../actions/userSuggestions';
 
 const width = Dimensions.get('window').width;
 
 function UsersList({navigation}) {
-  const context = useContext(UserMainContext);
+  const dispatch = useDispatch();
+  const suggestions = useSelector(state => state.userSuggestions);
+  const {username, id} = useSelector(state => state.currentUser);
+
   const [isLoadingSuggestions, setIsLoadingSuggestions] = useState(true);
-  const [suggestions, setSuggestions] = useState([]);
+  // const [suggestions, setSuggestions] = useState([]);
 
   useEffect(() => {
-    let sub = true;
+    dispatch(fetchUserSuggestions(username, id));
+    // let sub = true;
 
-    Axios.post(backendUrl + '/suggestions', {
-      username: context.username,
-      userId: context.userId,
-    })
-      .then(res => {
-        if (sub) {
-          setSuggestions(res.data);
-          setIsLoadingSuggestions(false);
-        }
-      })
-      .catch(err => {
-        if (sub) {
-          setIsLoadingSuggestions(false);
-        }
-        console.log(err);
-      });
+    // Axios.post(backendUrl + '/suggestions', {
+    //   username: context.username,
+    //   userId: context.userId,
+    // })
+    //   .then(res => {
+    //     if (sub) {
+    //       setSuggestions(res.data);
+    //       setIsLoadingSuggestions(false);
+    //     }
+    //   })
+    //   .catch(err => {
+    //     if (sub) {
+    //       setIsLoadingSuggestions(false);
+    //     }
+    //     console.log(err);
+    //   });
 
-    return () => {
-      sub = false;
-    };
+    // return () => {
+    //   sub = false;
+    // };
   }, []);
 
   return (
@@ -55,7 +60,7 @@ function UsersList({navigation}) {
             <Text style={{color: WimitiColors.black, fontSize: 20}}>
               Suggestions
             </Text>
-            {isLoadingSuggestions && suggestions.length == 0 ? (
+            {suggestions.loading && suggestions.users == 0 ? (
               <>
                 <SuggestionsPlaceHolder />
                 <SuggestionsPlaceHolder />
@@ -69,7 +74,7 @@ function UsersList({navigation}) {
               </>
             ) : (
               <View>
-                {suggestions.map((user, index) => (
+                {suggestions.users.map((user, index) => (
                   <Pressable
                     key={index}
                     onPress={() => navigation.navigate('ChattRoom', {user})}>

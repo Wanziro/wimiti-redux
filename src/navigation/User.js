@@ -1,5 +1,5 @@
 // import 'react-native-gesture-handler';
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect} from 'react';
 import {StatusBar, TouchableWithoutFeedback, View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -26,7 +26,6 @@ import UpdateDescription from '../screens/Profile/UpdateDescription';
 import UsersList from '../screens/Home1/Messages/NewChatt/UsersList';
 import ChattRoom from '../screens/Home1/Messages/ChattRoom/ChattRoom';
 import ChattRoomHeader from '../screens/Home1/Messages/ChattRoom/ChattRoomHeader/ChattRoomHeader';
-import {UserMainContext} from '../screens/Context/UserContext';
 
 //messages
 import {sendMessage, getAllMessages} from '../controller/userMessagesSync';
@@ -103,58 +102,56 @@ const HomeTabs1 = ({navigation}) => {
 };
 
 const User = () => {
-  const context = useContext(UserMainContext);
+  // const sendAllMessages = async () => {
+  //   const i = 1;
+  //   if (
+  //     typeof context.userMessagesToBeSent[i] != 'undefined' &&
+  //     context.userMessagesToBeSent[i].sent == false
+  //   ) {
+  //     try {
+  //       const response = await sendMessage(context.userMessagesToBeSent[i]);
+  //       console.log(response);
+  //       if (response.type == 'success') {
+  //         //remove the message from sending list
+  //         const newMessages = [...context.userMessagesToBeSent];
+  //         newMessages.splice(i, 1);
+  //         context.setUserMessagesToBeSent([...newMessages]);
 
-  const sendAllMessages = async () => {
-    const i = context.userMessagesToBeSent.length - 1;
-    if (
-      typeof context.userMessagesToBeSent[i] != 'undefined' &&
-      context.userMessagesToBeSent[i].sent == false
-    ) {
-      try {
-        const response = await sendMessage(context.userMessagesToBeSent[i]);
-        console.log(response);
-        if (response.type == 'success') {
-          //remove the message from sending list
-          const newMessages = [...context.userMessagesToBeSent];
-          newMessages.splice(i, 1);
-          context.setUserMessagesToBeSent([...newMessages]);
+  //         //TODO
+  //         //check if we have rendered this message else display
+  //         //otherwise display it
+  //       } else {
+  //         //error trying to send the message
+  //         console.log('message not sent');
+  //       }
+  //     } catch (error) {
+  //       console.log('An error occured while sending a message ', error);
+  //     }
+  //   }
+  // };
 
-          //TODO
-          //check if we have rendered this message else display
-          //otherwise display it
-        } else {
-          //error trying to send the message
-          console.log('message not sent');
-        }
-      } catch (error) {
-        console.log('An error occured while sending a message ', error);
-      }
-    }
-  };
-
-  const getUserMessages = async () => {
-    try {
-      const response = await getAllMessages(context.username, context.userId);
-      if (response.type == 'success') {
-        context.setUserMessages(response.messages);
-        // console.log(context.userMessages.length);
-        getUserMessages();
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  // const getUserMessages = async () => {
+  //   try {
+  //     const response = await getAllMessages(context.username, context.userId);
+  //     if (response.type == 'success') {
+  //       context.setUserMessages(response.messages);
+  //       // console.log(context.userMessages.length);
+  //       getUserMessages();
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   //watch for messages tobe sent
-  useEffect(() => {
-    sendAllMessages();
-  }, [context.userMessagesToBeSent]);
+  // useEffect(() => {
+  //   sendAllMessages();
+  // }, [context.userMessagesToBeSent]);
 
-  //watch user messages
-  useEffect(() => {
-    getUserMessages();
-  });
+  // //watch user messages
+  // useEffect(() => {
+  //   getUserMessages();
+  // });
 
   return (
     <NavigationContainer>

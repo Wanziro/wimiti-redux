@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   Text,
@@ -14,36 +14,25 @@ import WimitiColors from '../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import Axios from 'axios';
 import {backendUrl} from '../../Config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import RNRestart from 'react-native-restart';
+import {useDispatch} from 'react-redux';
+import {
+  setCurrentUserFname,
+  setCurrentUserLname,
+  setCurrentUserEmail,
+  setCurrentUserId,
+  setCurrentUserImage,
+  setCurrentUserPhone,
+  setCurrentUserUsername,
+} from '../../actions/currentUser';
 
 const Login = ({navigation}) => {
+  const dispatch = useDispatch();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [isSendingRequest, setIsSendingRequest] = useState(false);
 
   const usernameRef = useRef(null);
   const passwordRef = useRef(null);
-
-  const saveCredential = async (
-    id,
-    fname,
-    lname,
-    email,
-    phone,
-    username,
-    image,
-  ) => {
-    await AsyncStorage.setItem('user_id', id);
-    await AsyncStorage.setItem('user_fname', fname);
-    await AsyncStorage.setItem('user_lname', lname);
-    await AsyncStorage.setItem('user_email', email);
-    await AsyncStorage.setItem('user_phone', phone);
-    await AsyncStorage.setItem('user_image', image);
-    await AsyncStorage.setItem('username', username);
-
-    RNRestart.Restart();
-  };
 
   const hiddenPassword = () => {
     let result = '';
@@ -62,7 +51,13 @@ const Login = ({navigation}) => {
           if (res.data.type == 'success') {
             const {id, fname, lname, email, phone, username, image} =
               res.data.user;
-            saveCredential(id, fname, lname, email, phone, username, image);
+            dispatch(setCurrentUserId(id));
+            dispatch(setCurrentUserFname(fname));
+            dispatch(setCurrentUserLname(lname));
+            dispatch(setCurrentUserEmail(email));
+            dispatch(setCurrentUserPhone(phone));
+            dispatch(setCurrentUserImage(image));
+            dispatch(setCurrentUserUsername(username));
           } else {
             setPassword('');
             Alert.alert(

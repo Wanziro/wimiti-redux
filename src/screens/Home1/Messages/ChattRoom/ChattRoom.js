@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useContext} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -6,17 +6,25 @@ import {
   Platform,
   FlatList,
 } from 'react-native';
-import {UserMainContext} from '../../../Context/UserContext';
+import {useSelector, useDispatch} from 'react-redux';
+import {fetchUserMessages} from '../../../../actions/userMessages';
 import WimitiColors from '../../../../WimitiColors';
 import ChattInput from './ChattInput/ChattInput';
 import MessageItem from './MessageItem/MessageItem';
-// import db from '../../../../../../controller/db';
 
 const ChattRoom = ({route, navigation}) => {
-  const context = useContext(UserMainContext);
-  const [messages, setMessages] = useState([]);
+  const dispatch = useDispatch();
+  const {username, id} = useSelector(state => state.currentUser);
+  const {messages, messagesToBeSent} = useSelector(state => state.userMessages);
+  console.log('tobe sent');
+  console.log(messagesToBeSent);
   const keyExtractor = (item, index) => index.toString();
   const user = route.params.user;
+
+  //tobe removed
+  useEffect(() => {
+    dispatch(fetchUserMessages(username, id));
+  }, []);
 
   return (
     <KeyboardAvoidingView
@@ -26,20 +34,16 @@ const ChattRoom = ({route, navigation}) => {
       <View style={{backgroundColor: WimitiColors.white, flex: 1}}>
         <FlatList
           inverted
-          data={[...context.userMessages, ...context.userMessagesToBeSent]}
+          data={[...messagesToBeSent, ...messages]}
           keyExtractor={keyExtractor}
           renderItem={({item}) => (
-            <MessageItem
-              item={item}
-              currentUsername={context.username}
-              user={user}
-            />
+            <MessageItem item={item} currentUsername={username} user={user} />
           )}
           onEndReachedThreshold={5}
-          // onEndReached={this.getMoreMessages}
+          onEndReached={() => dispatch(fetchUserMessages(username, id))}
           style={{flex: 1}}
         />
-        <ChattInput user={user} />
+        <ChattInput user={user} currentUsername={username} />
       </View>
     </KeyboardAvoidingView>
   );

@@ -15,17 +15,17 @@ import Setup from './Setup';
 import Posts from './Posts';
 import UserPosts from './UserPosts/UserPosts';
 import Header from './Header/Header';
-import {UserMainContext} from '../Context/UserContext';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 import DraggablePanel from 'react-native-draggable-panel';
 import ViewComments from './UserPosts/ViewComments/ViewComments';
 import {backendUserImagesUrl} from '../../Config';
 import {messagesTable} from '../../helpers/tableCreations';
+import {useSelector} from 'react-redux';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 const Home = ({navigation}) => {
-  const context = useContext(UserMainContext);
+  const {image} = useSelector(state => state.currentUser);
   const [refreshing, setRefreshing] = useState(false);
   const [refreshStatus, setRefreshStatus] = useState(false);
   const [commentsPostId, setCommentsPostId] = useState(null);
@@ -72,10 +72,9 @@ const Home = ({navigation}) => {
                     flexDirection: 'row',
                   }}>
                   <View>
-                    {context.userImage != null &&
-                    context.userImage.trim() != '' ? (
+                    {image != null && image.trim() != '' ? (
                       <Image
-                        source={{uri: backendUserImagesUrl + context.userImage}}
+                        source={{uri: backendUserImagesUrl + image}}
                         style={{height: 30, width: 30, borderRadius: 50}}
                       />
                     ) : (

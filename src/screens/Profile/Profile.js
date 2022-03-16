@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   Text,
@@ -9,22 +9,24 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import {backendUrl, backendUserImagesUrl} from '../../Config';
-import {UserMainContext} from '../Context/UserContext';
 import WimitiColors from '../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 import Icon2 from 'react-native-vector-icons/dist/Feather';
 import ImagePicker from 'react-native-image-crop-picker';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Axios from 'axios';
+import {useSelector, useDispatch} from 'react-redux';
+import {setCurrentUserImage} from '../../actions/currentUser';
 
 function Profile({navigation}) {
-  const context = useContext(UserMainContext);
+  const dispatch = useDispatch();
+  const {image, username, id, fname, lname, phone, email, description, work} =
+    useSelector(state => state.currentUser);
+
   const [isSavingImage, setIsSavingImage] = useState(false);
 
   const updateDetails = async userImage => {
     try {
-      await AsyncStorage.setItem('user_image', userImage);
-      context.setUserImage(userImage);
+      dispatch(setCurrentUserImage(userImage));
     } catch (error) {
       console.log('Error occured while updating user image: ' + error);
     }
@@ -33,9 +35,9 @@ function Profile({navigation}) {
   const saveImage = async image => {
     const upload = await uploadFile(image);
     Axios.post(backendUrl + '/saveProfileImage', {
-      username: context.username,
+      username: username,
       image: upload.fileName,
-      userId: context.userId,
+      userId: id,
     })
       .then(res => {
         setIsSavingImage(false);
@@ -87,7 +89,7 @@ function Profile({navigation}) {
 
       var formData = new FormData();
       formData.append('file', photo);
-      formData.append('username', context.username);
+      formData.append('username', username);
 
       var xhr = new XMLHttpRequest();
       xhr.open('POST', url);
@@ -122,10 +124,10 @@ function Profile({navigation}) {
               paddingVertical: 10,
             }}>
             <View>
-              {context.userImage != '' && context.userImage != null ? (
+              {image != '' && image != null ? (
                 <View>
                   <Image
-                    source={{uri: backendUserImagesUrl + context.userImage}}
+                    source={{uri: backendUserImagesUrl + image}}
                     style={{width: 100, height: 100, borderRadius: 100}}
                   />
                 </View>
@@ -264,7 +266,7 @@ function Profile({navigation}) {
                 <View>
                   <Text style={{color: WimitiColors.gray}}>First name</Text>
                   <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                    {context.userFname}
+                    {fname}
                   </Text>
                 </View>
                 <View>
@@ -287,7 +289,7 @@ function Profile({navigation}) {
                 <View>
                   <Text style={{color: WimitiColors.gray}}>Last name</Text>
                   <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                    {context.userLname}
+                    {lname}
                   </Text>
                 </View>
                 <View>
@@ -308,7 +310,7 @@ function Profile({navigation}) {
               <View>
                 <Text style={{color: WimitiColors.gray}}>Username</Text>
                 <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                  {context.username}
+                  {username}
                 </Text>
               </View>
               {/* <View>
@@ -328,7 +330,7 @@ function Profile({navigation}) {
               <View>
                 <Text style={{color: WimitiColors.gray}}>Phone number</Text>
                 <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                  {context.userPhone}
+                  {phone}
                 </Text>
               </View>
               {/* <View>
@@ -348,7 +350,7 @@ function Profile({navigation}) {
               <View>
                 <Text style={{color: WimitiColors.gray}}>Email</Text>
                 <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                  {context.userEmail}
+                  {email}
                 </Text>
               </View>
               {/* <View>
@@ -388,7 +390,7 @@ function Profile({navigation}) {
                 <View>
                   <Text style={{color: WimitiColors.gray}}>Description</Text>
                   <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                    {context.userDescription}
+                    {description}
                   </Text>
                 </View>
                 <View>
@@ -411,7 +413,7 @@ function Profile({navigation}) {
                 <View>
                   <Text style={{color: WimitiColors.gray}}>Work</Text>
                   <Text style={{color: WimitiColors.black, marginTop: 5}}>
-                    {context.userWork}
+                    {work}
                   </Text>
                 </View>
                 <View>

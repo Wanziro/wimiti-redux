@@ -1,4 +1,4 @@
-import React, {useState, useRef, useEffect, useContext} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   Dimensions,
@@ -13,10 +13,12 @@ const width = Dimensions.get('window').width;
 
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import WimitiColors from '../../../../WimitiColors';
-import {UserMainContext} from '../../../Context/UserContext';
+import {useSelector, useDispatch} from 'react-redux';
+import {setPlayingVideo} from '../../../../actions/playingVideo';
 
 function Video({postContent}) {
-  const context = useContext(UserMainContext);
+  const dispatch = useDispatch();
+  const videoBeingPlayed = useSelector(state => state.playingVideo);
   const [paused, setPaused] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [isPlayed, setIsPlayed] = useState(false);
@@ -24,6 +26,9 @@ function Video({postContent}) {
   const videoRef = useRef();
 
   const onProgress = data => {
+    if (videoBeingPlayed.video != postContent.video) {
+      setPaused(true);
+    }
     setCurrentTime(data.currentTime);
     setIsLoading(false);
   };
@@ -35,15 +40,6 @@ function Video({postContent}) {
     setIsLoading(true);
   };
 
-  useEffect(() => {
-    let sub = true;
-    if (context.playingVideo != postContent.video) {
-      if (sub) {
-        setPaused(true);
-      }
-    }
-    return () => (sub = false);
-  }, [postContent]);
   return (
     <View style={{marginTop: 10, position: 'relative'}}>
       {isPlayed ? (
@@ -115,9 +111,9 @@ function Video({postContent}) {
         }}>
         <TouchableWithoutFeedback
           onPress={() => {
+            dispatch(setPlayingVideo(postContent.video));
             setIsPlayed(true);
             setPaused(!paused);
-            context.setPlayingVideo(postContent.video);
           }}>
           <View
             style={{

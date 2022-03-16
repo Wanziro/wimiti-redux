@@ -162,7 +162,7 @@ const Register = ({navigation}) => {
                   <View style={styles.signupBtn}>
                     <Text
                       style={{
-                        fontSize: 25,
+                        fontSize: 20,
                         fontWeight: '600',
                         color: WimitiColors.white,
                         textAlign: 'center',
@@ -212,13 +212,13 @@ const styles = StyleSheet.create({
   inputField: {
     borderRadius: 5,
     backgroundColor: WimitiColors.white,
-    padding: 15,
+    padding: 10,
     marginVertical: 10,
   },
   signupBtn: {
     marginTop: 20,
     borderRadius: 10,
-    padding: 5,
+    padding: 10,
     borderWidth: 1,
     borderColor: WimitiColors.white,
   },
