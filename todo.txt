@@ -1,0 +1,2 @@
+remove libraries:
+react native document picker

@@ -3,6 +3,7 @@ import {
   SET_FETCH_USER_MESSAGES_FAILURE,
   SET_FETCH_USER_MESSAGES_LOADING,
   SET_SEND_MESSAGE,
+  REMOVE_MESSAGE_FROM_SENDING_LIST,
 } from '../actions/userMessages';
 
 const initialState = {
@@ -24,6 +25,11 @@ const userMessages = (state = initialState, action) => {
       return {
         ...state,
         messagesToBeSent: [action.payload, ...state.messagesToBeSent],
+      };
+    case REMOVE_MESSAGE_FROM_SENDING_LIST:
+      return {
+        ...state,
+        messagesToBeSent: action.payload,
       };
     default:
       return state;

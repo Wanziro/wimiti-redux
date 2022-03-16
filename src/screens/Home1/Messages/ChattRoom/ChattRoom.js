@@ -7,7 +7,10 @@ import {
   FlatList,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
-import {fetchUserMessages} from '../../../../actions/userMessages';
+import {
+  fetchUserMessages,
+  sendAllMessages,
+} from '../../../../actions/userMessages';
 import WimitiColors from '../../../../WimitiColors';
 import ChattInput from './ChattInput/ChattInput';
 import MessageItem from './MessageItem/MessageItem';
@@ -16,15 +19,23 @@ const ChattRoom = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {username, id} = useSelector(state => state.currentUser);
   const {messages, messagesToBeSent} = useSelector(state => state.userMessages);
-  console.log('tobe sent');
-  console.log(messagesToBeSent);
+
+  // console.log('tobe sent');
+  // console.log(messagesToBeSent);
+
   const keyExtractor = (item, index) => index.toString();
   const user = route.params.user;
 
   //tobe removed
   useEffect(() => {
     dispatch(fetchUserMessages(username, id));
-  }, []);
+    dispatch(sendAllMessages(messagesToBeSent));
+  }, [messagesToBeSent]);
+
+  //send all messages that are waiting to be sent
+  // useEffect(() => {
+  //   dispatch(sendAllMessages(messagesToBeSent));
+  // }, [messagesToBeSent]);
 
   return (
     <KeyboardAvoidingView
