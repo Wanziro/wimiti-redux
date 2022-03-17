@@ -8,6 +8,7 @@ module.exports = {
   backendUrl: 'http://192.168.43.55/RN/wimiti',
   backendPostFilesUrl: 'http://192.168.43.55/RN/wimiti/uploads/posts/',
   backendUserImagesUrl: 'http://192.168.43.55/RN/wimiti/uploads/profile/', // local
+  backendChattFilesUrl: 'http://192.168.43.55/RN/wimiti/uploads/chatt/', // local
 };
 
 // production

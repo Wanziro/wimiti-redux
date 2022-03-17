@@ -1,5 +1,13 @@
 import React, {useState, useRef, useContext} from 'react';
-import {View, TextInput, Dimensions, Pressable, Keyboard} from 'react-native';
+import {
+  View,
+  TextInput,
+  Dimensions,
+  Pressable,
+  Keyboard,
+  Modal,
+} from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/dist/MaterialIcons';
 import Icon3 from 'react-native-vector-icons/dist/Entypo';
@@ -8,6 +16,7 @@ import WimitiColors from '../../../../../WimitiColors';
 import EmojiSelector from 'react-native-emoji-selector';
 import {useDispatch} from 'react-redux';
 import {setSendMessage} from '../../../../../actions/userMessages';
+import SendFileModal from './SendFileModal';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -17,7 +26,22 @@ function ChattInput({user, currentUsername}) {
   const [message, setMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
   const [showEmoji, setShowEmoji] = useState(false);
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [showModal, setShowModal] = useState(false);
   const inputRef = useRef(null);
+
+  const handleFileSelect = async () => {
+    try {
+      const result = await launchImageLibrary({
+        selectionLimit: 1,
+        mediaType: 'mixed',
+      });
+      setSelectedFile(result.assets[0]);
+      setShowModal(true);
+    } catch (error) {
+      console.log('Error occured while selecting chatt file. ' + error.message);
+    }
+  };
 
   const handleSendMessage = async () => {
     if (message.trim() != '') {
@@ -27,6 +51,7 @@ function ChattInput({user, currentUsername}) {
         sender: currentUsername,
         receiver: user.username,
         textMessage: message,
+        file: '',
         date: new Date(),
         sent: false,
         delivered: false,
@@ -98,10 +123,12 @@ function ChattInput({user, currentUsername}) {
               value={message}
               ref={inputRef}
             />
-            {message.trim() == '' && (
-              <View>
-                <Icon3 name="camera" size={25} color={WimitiColors.black} />
-              </View>
+            {message.trim() === '' && (
+              <Pressable onPress={() => handleFileSelect()}>
+                <View>
+                  <Icon3 name="camera" size={25} color={WimitiColors.black} />
+                </View>
+              </Pressable>
             )}
           </View>
         </View>
@@ -155,6 +182,16 @@ function ChattInput({user, currentUsername}) {
           />
         </View>
       ) : null}
+
+      <Modal visible={showModal}>
+        <SendFileModal
+          setShowModal={setShowModal}
+          selectedFile={selectedFile}
+          setSelectedFile={setSelectedFile}
+          currentUsername={currentUsername}
+          user={user}
+        />
+      </Modal>
     </View>
   );
 }

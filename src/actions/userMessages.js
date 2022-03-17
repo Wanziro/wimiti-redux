@@ -1,5 +1,6 @@
 import Axios from 'axios';
 import {backendUrl} from '../Config';
+import {uploadChattFile} from '../helpers/fileUploads';
 
 export const SET_USER_MESSAGES = 'SET_USER_MESSAGES';
 export const SET_FETCH_USER_MESSAGES_LOADING =
@@ -49,19 +50,53 @@ export const sendAllMessages = AllMessages => dispatch => {
   // const messageToBeSent = AllMessages[0];
   const messageToBeSent = AllMessages[AllMessages.length - 1];
   if (messageToBeSent) {
-    Axios.post(backendUrl + '/sendMessage', messageToBeSent)
-      .then(response => {
-        //dispathchinga actions
-        // const messageFromServer = response.data.messageSent;
-        // console.log('message from the server', messageFromServer);
-        const sortedMessages = AllMessages.filter(
-          message => message.date != messageToBeSent.date,
-        );
-        dispatch(removeMessageFromSendingList(sortedMessages));
-      })
-      .catch(error => {
-        console.log('error while sending message ', error.message);
-      });
+    if (messageToBeSent.file === '') {
+      //send only text message
+      Axios.post(backendUrl + '/sendMessage', messageToBeSent)
+        .then(response => {
+          //dispathchinga actions
+          // const messageFromServer = response.data.messageSent;
+          // console.log('message from the server', messageFromServer);
+          const sortedMessages = AllMessages.filter(
+            message => message.date != messageToBeSent.date,
+          );
+          dispatch(removeMessageFromSendingList(sortedMessages));
+        })
+        .catch(error => {
+          console.log('error while sending message ', error.message);
+        });
+      //send only text message
+    } else {
+      // send file message
+      //upload the file first
+      uploadChattFile(messageToBeSent.file, messageToBeSent.sender)
+        .then(res => {
+          const updatedMessage = {
+            ...messageToBeSent,
+            file: JSON.stringify({
+              ...messageToBeSent.file,
+              uri: res.uploadeFileName,
+            }),
+          };
+          //save the message to db
+          Axios.post(backendUrl + '/sendMessage', updatedMessage)
+            .then(response => {
+              const sortedMessages = AllMessages.filter(
+                message => message.date != messageToBeSent.date,
+              );
+              dispatch(removeMessageFromSendingList(sortedMessages));
+            })
+            .catch(error => {
+              console.log('error while sending message ', error.message);
+            });
+        })
+        .catch(err => {
+          console.log(
+            'Error while receiving chatt file sent from server' + err,
+          );
+        });
+      //send file message
+    }
   }
 };
 
