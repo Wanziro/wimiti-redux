@@ -11,6 +11,7 @@ function SendFileModal({
   selectedFile,
   setSelectedFile,
   currentUsername,
+  currentUserImage,
   setShowModal,
   user,
 }) {
@@ -52,6 +53,7 @@ function SendFileModal({
         <SendFileInput
           user={user}
           currentUsername={currentUsername}
+          currentUserImage={currentUserImage}
           selectedFile={selectedFile}
           setShowModal={setShowModal}
           setSelectedFile={setSelectedFile}

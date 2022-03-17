@@ -9,6 +9,7 @@ import {
 import {useSelector, useDispatch} from 'react-redux';
 import {
   fetchUserMessages,
+  organiseChattRooms,
   sendAllMessages,
 } from '../../../../actions/userMessages';
 import WimitiColors from '../../../../WimitiColors';
@@ -17,7 +18,7 @@ import MessageItem from './MessageItem/MessageItem';
 
 const ChattRoom = ({route, navigation}) => {
   const dispatch = useDispatch();
-  const {username, id} = useSelector(state => state.currentUser);
+  const {username, image, id} = useSelector(state => state.currentUser);
   const {messages, messagesToBeSent} = useSelector(state => state.userMessages);
 
   // console.log('tobe sent');
@@ -32,10 +33,27 @@ const ChattRoom = ({route, navigation}) => {
     dispatch(sendAllMessages(messagesToBeSent));
   }, [messagesToBeSent]);
 
+  //refresh chattrooms
+  useEffect(() => {
+    dispatch(organiseChattRooms([...messages, ...messagesToBeSent]));
+  }, [messagesToBeSent, messages]);
+
   //send all messages that are waiting to be sent
   // useEffect(() => {
   //   dispatch(sendAllMessages(messagesToBeSent));
   // }, [messagesToBeSent]);
+  const uniqueArray = array => {
+    var a = array.concat();
+    for (var i = 0; i < a.length; ++i) {
+      for (var j = i + 1; j < a.length; ++j) {
+        if (a[i].date == a[j].date) {
+          a.splice(j--, 1);
+        }
+      }
+    }
+
+    return a;
+  };
 
   return (
     <KeyboardAvoidingView
@@ -45,7 +63,7 @@ const ChattRoom = ({route, navigation}) => {
       <View style={{backgroundColor: WimitiColors.white, flex: 1}}>
         <FlatList
           inverted
-          data={[...messagesToBeSent, ...messages]}
+          data={uniqueArray([...messagesToBeSent, ...messages])}
           keyExtractor={keyExtractor}
           renderItem={({item}) => (
             <MessageItem item={item} currentUsername={username} user={user} />
@@ -54,7 +72,11 @@ const ChattRoom = ({route, navigation}) => {
           onEndReached={() => dispatch(fetchUserMessages(username, id))}
           style={{flex: 1}}
         />
-        <ChattInput user={user} currentUsername={username} />
+        <ChattInput
+          user={user}
+          currentUsername={username}
+          currentUserImage={image}
+        />
       </View>
     </KeyboardAvoidingView>
   );

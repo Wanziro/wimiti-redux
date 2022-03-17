@@ -8,6 +8,7 @@ import {setSendMessage} from '../../../../../actions/userMessages';
 function SendFileInput({
   user,
   currentUsername,
+  currentUserImage,
   selectedFile,
   setSelectedFile,
   setShowModal,
@@ -18,7 +19,9 @@ function SendFileInput({
     if (selectedFile !== null) {
       const newMessage = {
         sender: currentUsername,
+        senderImage: currentUserImage,
         receiver: user.username,
+        receiverImage: user.image,
         textMessage: message,
         file: selectedFile,
         date: new Date(),

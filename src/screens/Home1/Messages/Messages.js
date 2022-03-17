@@ -1,18 +1,40 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {
   SafeAreaView,
-  Text,
   View,
   TextInput,
   ScrollView,
   Pressable,
+  Text,
 } from 'react-native';
 import WimitiColors from '../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/Octicons';
 import Icon2 from 'react-native-vector-icons/dist/Ionicons';
 import ChatList from './ChatList/ChatList';
+import {useDispatch, useSelector} from 'react-redux';
+import {
+  fetchUserMessages,
+  organiseChattRooms,
+  sendAllMessages,
+} from '../../../actions/userMessages';
+import MessagesPlaceHolder from './PlaceHolders/MessagesPlaceHolder';
 
 function Messages({navigation}) {
+  const dispatch = useDispatch();
+  const {username, id} = useSelector(state => state.currentUser);
+  const {messages, messagesToBeSent, chattRooms, loading} = useSelector(
+    state => state.userMessages,
+  );
+
+  useEffect(() => {
+    dispatch(fetchUserMessages(username, id));
+    dispatch(sendAllMessages(messagesToBeSent));
+  }, []);
+
+  //refresh chatt rooms
+  useEffect(() => {
+    dispatch(organiseChattRooms([...messages, ...messagesToBeSent]));
+  }, [messages, messagesToBeSent]);
   return (
     <View
       style={{
@@ -25,35 +47,55 @@ function Messages({navigation}) {
             position: 'relative',
             height: '100%',
           }}>
-          <ScrollView>
-            <View style={{paddingHorizontal: 10}}>
-              <View
-                style={{marginTop: 15, marginBottom: 10, position: 'relative'}}>
-                <TextInput
-                  style={{
-                    padding: 10,
-                    paddingLeft: 40,
-                    height: 40,
-                    borderRadius: 5,
-                    backgroundColor: WimitiColors.white2,
-                  }}
-                  placeholder="Search"
+          {messages.length === 0 &&
+          messagesToBeSent.length === 0 &&
+          loading === true ? (
+            <MessagesPlaceHolder />
+          ) : (
+            <ScrollView>
+              <View style={{paddingHorizontal: 10}}>
+                {chattRooms.length > 0 && (
+                  <View
+                    style={{
+                      marginTop: 15,
+                      marginBottom: 10,
+                      position: 'relative',
+                    }}>
+                    <TextInput
+                      style={{
+                        padding: 10,
+                        paddingLeft: 40,
+                        height: 40,
+                        borderRadius: 5,
+                        backgroundColor: WimitiColors.white2,
+                      }}
+                      placeholder="Search"
+                    />
+                    <View
+                      style={{
+                        position: 'absolute',
+                        top: 0,
+                        height: 40,
+                        width: 40,
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                      }}>
+                      <Icon2
+                        name="search"
+                        size={30}
+                        color={WimitiColors.black}
+                      />
+                    </View>
+                  </View>
+                )}
+                <ChatList
+                  chattRooms={chattRooms}
+                  navigation={navigation}
+                  username={username}
                 />
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: 0,
-                    height: 40,
-                    width: 40,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}>
-                  <Icon2 name="search" size={30} color={WimitiColors.black} />
-                </View>
               </View>
-              <ChatList />
-            </View>
-          </ScrollView>
+            </ScrollView>
+          )}
 
           <View
             style={{

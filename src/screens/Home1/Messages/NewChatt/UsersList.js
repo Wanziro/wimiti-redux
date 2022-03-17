@@ -60,7 +60,7 @@ function UsersList({navigation}) {
             <Text style={{color: WimitiColors.black, fontSize: 20}}>
               Suggestions
             </Text>
-            {suggestions.loading && suggestions.users == 0 ? (
+            {suggestions.loading && suggestions.users.length == 0 ? (
               <>
                 <SuggestionsPlaceHolder />
                 <SuggestionsPlaceHolder />

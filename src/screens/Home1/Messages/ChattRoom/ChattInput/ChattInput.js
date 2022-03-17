@@ -21,7 +21,7 @@ import SendFileModal from './SendFileModal';
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-function ChattInput({user, currentUsername}) {
+function ChattInput({user, currentUsername, currentUserImage}) {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -49,7 +49,9 @@ function ChattInput({user, currentUsername}) {
 
       const newMessage = {
         sender: currentUsername,
+        senderImage: currentUserImage,
         receiver: user.username,
+        receiverImage: user.image,
         textMessage: message,
         file: '',
         date: new Date(),
@@ -189,6 +191,7 @@ function ChattInput({user, currentUsername}) {
           selectedFile={selectedFile}
           setSelectedFile={setSelectedFile}
           currentUsername={currentUsername}
+          currentUserImage={currentUserImage}
           user={user}
         />
       </Modal>

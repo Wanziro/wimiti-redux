@@ -1,57 +1,83 @@
 import React from 'react';
-import {View, Text, Image, Dimensions} from 'react-native';
+import {View, Text, Image, Dimensions, Pressable} from 'react-native';
 import WimitiColors from '../../../../WimitiColors';
+import moment from 'moment';
+import {backendUserImagesUrl} from '../../../../Config';
+import Icon from 'react-native-vector-icons/dist/AntDesign';
 
 const width = Dimensions.get('window').width;
-const ChatItem = ({message, date, user, image}) => {
-  const getImage2 = image => {
-    switch (image) {
-      case 'person1':
-        return require('../../../../../assets/images/person1.jpg');
-        break;
-
-      case 'person2':
-        return require('../../../../../assets/images/person2.jpg');
-        break;
-
-      case 'person3':
-        return require('../../../../../assets/images/person3.jpg');
-        break;
-
-      case 'person4':
-        return require('../../../../../assets/images/person4.jpg');
-        break;
-      case 'person5':
-        return require('../../../../../assets/images/person5.jpg');
-        break;
-      default:
-        return require('../../../../../assets/images/person1.jpg');
-        break;
+const ChatItem = ({room, username, navigation}) => {
+  const getUsernameToDisplay = () => {
+    if (room.sender === username) {
+      return room.receiver;
+    } else {
+      return room.sender;
     }
   };
+
+  const getImageToDisplay = () => {
+    if (room.sender === username) {
+      return room.receiverImage;
+    } else {
+      return room.senderImage;
+    }
+  };
+
+  const userObj = () => {
+    if (room.sender === username) {
+      return {username: room.receiver, image: room.receiverImage};
+    } else {
+      return {
+        username: room.sender,
+        image: room.senderImage,
+      };
+    }
+  };
+
   return (
-    <View
-      style={{
-        display: 'flex',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
-        flexDirection: 'row',
-        marginVertical: 10,
-      }}>
-      <View>
-        <Image
-          source={getImage2(image)}
-          style={{width: 50, height: 50, borderRadius: 100}}
-        />
+    <Pressable
+      onPress={() => navigation.navigate('ChattRoom', {user: userObj()})}>
+      <View
+        style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          justifyContent: 'space-between',
+          flexDirection: 'row',
+          marginVertical: 10,
+        }}>
+        <View>
+          {getImageToDisplay().trim() === '' || getImageToDisplay() == null ? (
+            <View
+              style={{
+                width: 50,
+                height: 50,
+                borderRadius: 100,
+                backgroundColor: WimitiColors.black,
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+              <Icon name="user" size={30} color={WimitiColors.white} />
+            </View>
+          ) : (
+            <Image
+              source={{uri: backendUserImagesUrl + getImageToDisplay()}}
+              style={{width: 50, height: 50, borderRadius: 100}}
+            />
+          )}
+        </View>
+        <View style={{paddingLeft: 10, flex: 1}}>
+          <Text style={{color: WimitiColors.black}}>
+            {getUsernameToDisplay()}
+          </Text>
+          <Text numberOfLines={1}>{room.textMessage}</Text>
+        </View>
+        <View>
+          <Text style={{color: WimitiColors.black}}>
+            {moment(room.date).format('DD/MM/YYYY')}
+          </Text>
+        </View>
       </View>
-      <View style={{width: width - 150, paddingLeft: 10}}>
-        <Text style={{color: WimitiColors.black}}>{user}</Text>
-        <Text>{message}</Text>
-      </View>
-      <View>
-        <Text>{date}</Text>
-      </View>
-    </View>
+    </Pressable>
   );
 };
 

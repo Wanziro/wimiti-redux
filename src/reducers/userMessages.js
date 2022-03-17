@@ -4,6 +4,7 @@ import {
   SET_FETCH_USER_MESSAGES_LOADING,
   SET_SEND_MESSAGE,
   REMOVE_MESSAGE_FROM_SENDING_LIST,
+  SET_CHATT_ROOMS,
 } from '../actions/userMessages';
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
   loading: true,
   error: '',
   messagesToBeSent: [],
+  chattRooms: [],
 };
 
 const userMessages = (state = initialState, action) => {
@@ -30,6 +32,11 @@ const userMessages = (state = initialState, action) => {
       return {
         ...state,
         messagesToBeSent: action.payload,
+      };
+    case SET_CHATT_ROOMS:
+      return {
+        ...state,
+        chattRooms: action.payload,
       };
     default:
       return state;

@@ -7,10 +7,10 @@ export const SET_FETCH_USER_MESSAGES_LOADING =
   'SET_FETCH_USER_MESSAGES_LOADING';
 export const SET_FETCH_USER_MESSAGES_FAILURE =
   'SET_FETCH_USER_MESSAGES_FAILURE';
-
 export const SET_SEND_MESSAGE = 'SET_SEND_MESSAGE';
 export const REMOVE_MESSAGE_FROM_SENDING_LIST =
   'REMOVE_MESSAGE_FROM_SENDING_LIST';
+export const SET_CHATT_ROOMS = 'SET_CHATT_ROOMS';
 
 export const setUserMessages = messages => dispatch => {
   dispatch({
@@ -18,13 +18,11 @@ export const setUserMessages = messages => dispatch => {
     payload: messages,
   });
 };
-
 export const setFetchUserMessagesLoading = () => dispatch => {
   dispatch({
     type: SET_FETCH_USER_MESSAGES_LOADING,
   });
 };
-
 export const removeMessageFromSendingList = message => dispatch => {
   dispatch({
     type: REMOVE_MESSAGE_FROM_SENDING_LIST,
@@ -44,6 +42,31 @@ export const setSendMessage = message => dispatch => {
     type: SET_SEND_MESSAGE,
     payload: message,
   });
+};
+
+export const setChattRooms = rooms => dispatch => {
+  dispatch({
+    type: SET_CHATT_ROOMS,
+    payload: rooms,
+  });
+};
+
+export const organiseChattRooms = AllMessages => dispatch => {
+  let rooms = AllMessages.concat();
+  for (let i = 0; i < rooms.length; ++i) {
+    for (let j = i + 1; j < rooms.length; ++j) {
+      if (
+        (rooms[i].sender == rooms[j].sender &&
+          rooms[i].receiver == rooms[j].receiver) ||
+        (rooms[i].sender == rooms[j].receiver &&
+          rooms[i].receiver == rooms[j].sender)
+      ) {
+        rooms.splice(j--, 1);
+      }
+    }
+  }
+
+  dispatch(setChattRooms(rooms));
 };
 
 export const sendAllMessages = AllMessages => dispatch => {
@@ -92,7 +115,7 @@ export const sendAllMessages = AllMessages => dispatch => {
         })
         .catch(err => {
           console.log(
-            'Error while receiving chatt file sent from server' + err,
+            'Error while receiving chatt file sent from server ' + err,
           );
         });
       //send file message
