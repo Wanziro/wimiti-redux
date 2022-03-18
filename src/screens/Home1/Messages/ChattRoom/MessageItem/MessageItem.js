@@ -1,14 +1,15 @@
 import React from 'react';
-import {View, Image, Text, Dimensions} from 'react-native';
+import {View, Image, Text, Dimensions, Pressable} from 'react-native';
 import WimitiColors from '../../../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import TimeAgo from 'react-native-timeago';
 import {backendChattFilesUrl} from '../../../../../Config';
 import Video from 'react-native-video';
+import VideoThumbnail from './VideoThumbnail';
 
-const width = Dimensions.get('window').width;
+const {width} = Dimensions.get('window');
 
-function MessageItem({item, currentUsername, user}) {
+function MessageItem({item, currentUsername, user, navigation}) {
   let file = '';
 
   const handleDeliveryIcons = () => {
@@ -79,14 +80,17 @@ function MessageItem({item, currentUsername, user}) {
                   borderRadius: 15,
                 }}>
                 {item.file !== '' && (
-                  <View>
+                  <Pressable
+                    onPress={() =>
+                      navigation.navigate('ChattFilePreview', {message: item})
+                    }>
                     {file !== '' && file.type.split('/')[0] == 'image' && (
                       <View>
                         {item.sent == 'true' ? (
                           <Image
                             source={{uri: backendChattFilesUrl + file.uri}}
                             style={{
-                              width: width / 2,
+                              width: width - 100,
                               height: undefined,
                               aspectRatio: 1,
                             }}
@@ -95,7 +99,7 @@ function MessageItem({item, currentUsername, user}) {
                           <Image
                             source={{uri: file.uri}}
                             style={{
-                              width: width / 2,
+                              width: width - 100,
                               height: undefined,
                               aspectRatio: 1,
                             }}
@@ -106,21 +110,12 @@ function MessageItem({item, currentUsername, user}) {
                     {file !== '' && file.type.split('/')[0] == 'video' && (
                       <View>
                         {item.sent == 'true' ? (
-                          <Video
-                            paused={true}
-                            source={{uri: backendChattFilesUrl + file.uri}}
-                            style={{
-                              width: width / 2,
-                              height: undefined,
-                              aspectRatio: 1,
-                            }}
-                            resizeMode="cover"
-                          />
+                          <VideoThumbnail file={file} messageId={item.id} />
                         ) : (
                           <Image
                             source={{uri: file.uri}}
                             style={{
-                              width: width / 2,
+                              width: width - 100,
                               height: undefined,
                               aspectRatio: 1,
                             }}
@@ -128,18 +123,22 @@ function MessageItem({item, currentUsername, user}) {
                         )}
                       </View>
                     )}
-                  </View>
+                  </Pressable>
                 )}
                 {(file !== '' && file.type.split('/')[0] == 'image') ||
                 (file !== '' && file.type.split('/')[0] == 'video') ? (
-                  <Text
-                    style={{
-                      color: WimitiColors.black,
-                      width: 200,
-                      marginTop: 5,
-                    }}>
-                    {item.textMessage}
-                  </Text>
+                  <>
+                    {item.textMessage != '' && (
+                      <Text
+                        style={{
+                          color: WimitiColors.black,
+                          width: width - 100,
+                          marginTop: 5,
+                        }}>
+                        {item.textMessage}
+                      </Text>
+                    )}
+                  </>
                 ) : (
                   <Text style={{color: WimitiColors.black}}>
                     {item.textMessage}

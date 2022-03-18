@@ -4,9 +4,12 @@ import WimitiColors from '../../../../WimitiColors';
 import moment from 'moment';
 import {backendUserImagesUrl} from '../../../../Config';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
+import Icon2 from 'react-native-vector-icons/dist/MaterialIcons';
+import Icon3 from 'react-native-vector-icons/dist/Ionicons';
 
 const width = Dimensions.get('window').width;
 const ChatItem = ({room, username, navigation}) => {
+  let file = '';
   const getUsernameToDisplay = () => {
     if (room.sender === username) {
       return room.receiver;
@@ -33,6 +36,14 @@ const ChatItem = ({room, username, navigation}) => {
       };
     }
   };
+
+  if (room.file !== '') {
+    try {
+      file = JSON.parse(room.file);
+    } catch (error) {
+      file = room.file;
+    }
+  }
 
   return (
     <Pressable
@@ -69,7 +80,63 @@ const ChatItem = ({room, username, navigation}) => {
           <Text style={{color: WimitiColors.black}}>
             {getUsernameToDisplay()}
           </Text>
-          <Text numberOfLines={1}>{room.textMessage}</Text>
+          {file !== '' ? (
+            <>
+              {room.textMessage !== '' ? (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                  }}>
+                  {file.type.split('/')[0] == 'image' && (
+                    <Icon2 name="photo" size={25} color={WimitiColors.black} />
+                  )}
+                  {file.type.split('/')[0] == 'video' && (
+                    <Icon3
+                      name="videocam"
+                      size={25}
+                      color={WimitiColors.black}
+                    />
+                  )}
+                  <Text
+                    numberOfLines={1}
+                    style={{color: WimitiColors.gray, paddingLeft: 5}}>
+                    {room.textMessage}
+                  </Text>
+                </View>
+              ) : (
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'flex-start',
+                  }}>
+                  {file.type.split('/')[0] == 'image' && (
+                    <Icon2 name="photo" size={25} color={WimitiColors.black} />
+                  )}
+                  {file.type.split('/')[0] == 'video' && (
+                    <Icon3
+                      name="videocam"
+                      size={25}
+                      color={WimitiColors.black}
+                    />
+                  )}
+                  <Text
+                    numberOfLines={1}
+                    style={{
+                      color: WimitiColors.gray,
+                      textTransform: 'capitalize',
+                      paddingLeft: 5,
+                    }}>
+                    {file.type.split('/')[0]}
+                  </Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <Text numberOfLines={1}>{room.textMessage}</Text>
+          )}
         </View>
         <View>
           <Text style={{color: WimitiColors.black}}>

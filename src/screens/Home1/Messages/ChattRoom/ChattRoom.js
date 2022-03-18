@@ -66,7 +66,12 @@ const ChattRoom = ({route, navigation}) => {
           data={uniqueArray([...messagesToBeSent, ...messages])}
           keyExtractor={keyExtractor}
           renderItem={({item}) => (
-            <MessageItem item={item} currentUsername={username} user={user} />
+            <MessageItem
+              item={item}
+              navigation={navigation}
+              currentUsername={username}
+              user={user}
+            />
           )}
           onEndReachedThreshold={5}
           onEndReached={() => dispatch(fetchUserMessages(username, id))}

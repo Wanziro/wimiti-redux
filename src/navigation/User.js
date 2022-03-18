@@ -29,6 +29,7 @@ import ChattRoomHeader from '../screens/Home1/Messages/ChattRoom/ChattRoomHeader
 
 //messages
 import {sendMessage, getAllMessages} from '../controller/userMessagesSync';
+import ChattFilePreview from '../screens/Home1/Messages/ChattFilePreview/ChattFilePreview';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -271,6 +272,17 @@ const User = () => {
           component={UpdateWork}
           options={{
             title: 'Update your work status',
+          }}
+        />
+
+        <Stack.Screen
+          name="ChattFilePreview"
+          component={ChattFilePreview}
+          options={{
+            title: '',
+            headerShadowVisible: false,
+            headerTransparent: true,
+            headerTintColor: WimitiColors.white,
           }}
         />
 

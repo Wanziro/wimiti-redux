@@ -5,7 +5,6 @@ import {
   TextInput,
   ScrollView,
   Pressable,
-  Text,
 } from 'react-native';
 import WimitiColors from '../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/Octicons';
