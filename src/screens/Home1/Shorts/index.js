@@ -6,32 +6,20 @@ import Icon from 'react-native-vector-icons/dist/FontAwesome';
 import Axios from 'axios';
 import {backendUrl} from '../../../Config';
 import {useDispatch, useSelector} from 'react-redux';
-import {setShorts} from '../../../actions/shorts';
+import {fetchShorts, setShorts} from '../../../actions/shorts';
 import VideoItem from './VideoItem';
 import ShortPlaceholder from './Placeholders/ShortPlaceholder';
 const {width, height} = Dimensions.get('window');
 
 function Shorts({navigation}) {
   const dispatch = useDispatch();
-  const {shorts, currentViewingIndex} = useSelector(state => state.shorts);
-  const [isLoadingVideos, setIsLoadingVideos] = useState(true);
+  const {shorts, currentViewingIndex, isLoadingShorts, error} = useSelector(
+    state => state.shorts,
+  );
 
   useEffect(() => {
-    fetchShorts();
+    dispatch(fetchShorts());
   }, []);
-
-  const fetchShorts = () => {
-    Axios.post(backendUrl + '/getAllShorts', {})
-      .then(res => {
-        // console.log(res.data);
-        dispatch(setShorts(res.data));
-        console.log('got shorts');
-        // setIsLoadingVideos(false);
-        console.log('shorts length ', shorts.length);
-        console.log('currentViewingIndex ', currentViewingIndex);
-      })
-      .catch(error => console.log(error));
-  };
 
   const handleFileSelect = async () => {
     try {
@@ -57,7 +45,7 @@ function Shorts({navigation}) {
           backgroundColor: WimitiColors.black,
           position: 'relative',
         }}>
-        {isLoadingVideos && shorts.length === 0 ? (
+        {isLoadingShorts && shorts.length === 0 ? (
           <ShortPlaceholder />
         ) : (
           <View>

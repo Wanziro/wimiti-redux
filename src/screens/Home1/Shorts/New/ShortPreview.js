@@ -16,13 +16,15 @@ import Icon from 'react-native-vector-icons/dist/Ionicons';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import UploadModal from './UploadModal';
 import {uploadShort} from '../../../../helpers/fileUploads';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
 import {backendUrl} from '../../../../Config';
+import {fetchShorts, setCurrentViewingIndex} from '../../../../actions/shorts';
 
 const {width, height} = Dimensions.get('window');
 
 function ShortPreview({route, navigation}) {
+  const dispatch = useDispatch();
   const {videoFile} = route.params;
   const {username, id} = useSelector(state => state.currentUser);
   const [loadingThumbnail, setLoadingThumbnail] = useState(true);
@@ -56,6 +58,8 @@ function ShortPreview({route, navigation}) {
         })
           .then(res => {
             if (res.data.type == 'success') {
+              dispatch(fetchShorts());
+              dispatch(setCurrentViewingIndex(0));
               navigation.navigate('Shorts');
             } else {
               setShowModal(false);
