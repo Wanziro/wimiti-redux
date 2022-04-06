@@ -1,5 +1,12 @@
 import React, {useState, useEffect, useRef} from 'react';
-import {View, Dimensions, Text, StyleSheet, Image} from 'react-native';
+import {
+  View,
+  Dimensions,
+  Text,
+  StyleSheet,
+  Image,
+  ActivityIndicator,
+} from 'react-native';
 import Video from 'react-native-video';
 import {backendShortVideosUrl, backendUserImagesUrl} from '../../../Config';
 import WimitiColors from '../../../WimitiColors';
@@ -13,27 +20,27 @@ const {width, height} = Dimensions.get('window');
 function VideoItem({videoObj}) {
   const [paused, setPaused] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const videoRef = useRef(null);
 
   const onProgress = data => {
     setCurrentTime(data.currentTime);
+    setIsLoading(false);
   };
 
   useEffect(() => {
+    setCurrentTime(0);
+    setPaused(false);
     return () => {
-      setPaused(false);
+      setPaused(true);
     };
   }, []);
 
   return (
-    <View style={{position: 'relative'}}>
+    <View style={{position: 'relative', flex: 1}}>
       <Video
-        onEnd={() => {
-          setPaused(true);
-          setCurrentTime(0);
-        }}
-        // onLoad={onLoad}
-        // onLoadStart={onLoadStart}
+        onLoad={() => setIsLoading(true)}
+        onLoadStart={() => setIsLoading(true)}
         onProgress={onProgress}
         paused={paused}
         currentTime={currentTime}
@@ -128,6 +135,21 @@ function VideoItem({videoObj}) {
           </View>
         </View>
       </View>
+
+      {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            width,
+            height,
+            zIndex: 1,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+          <ActivityIndicator size={50} color={WimitiColors.white} />
+        </View>
+      )}
     </View>
   );
 }

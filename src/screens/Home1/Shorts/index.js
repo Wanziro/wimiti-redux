@@ -3,10 +3,9 @@ import {View, Text, StatusBar, Dimensions, Pressable} from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import WimitiColors from '../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
-import Axios from 'axios';
-import {backendUrl} from '../../../Config';
 import {useDispatch, useSelector} from 'react-redux';
-import {fetchShorts, setShorts} from '../../../actions/shorts';
+import {fetchShorts, setCurrentViewingIndex} from '../../../actions/shorts';
+import Carousel from 'pinar';
 import VideoItem from './VideoItem';
 import ShortPlaceholder from './Placeholders/ShortPlaceholder';
 const {width, height} = Dimensions.get('window');
@@ -48,9 +47,19 @@ function Shorts({navigation}) {
         {isLoadingShorts && shorts.length === 0 ? (
           <ShortPlaceholder />
         ) : (
-          <View>
-            <VideoItem videoObj={shorts[currentViewingIndex]} />
-          </View>
+          <Carousel
+            autoplay={false}
+            showsControls={false}
+            index={currentViewingIndex}
+            horizontal={false}
+            showsDots={false}
+            onIndexChanged={({index, total}) => {
+              dispatch(setCurrentViewingIndex(index));
+            }}>
+            {shorts.map((short, index) => (
+              <VideoItem key={index} videoObj={short} />
+            ))}
+          </Carousel>
         )}
         <View
           style={{
