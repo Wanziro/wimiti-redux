@@ -4,6 +4,7 @@ import {
   SET_FETCH_USER_MESSAGES_LOADING,
   SET_SEND_MESSAGE,
   REMOVE_MESSAGE_FROM_SENDING_LIST,
+  ADD_SINGLE_MESSAGE,
   SET_CHATT_ROOMS,
 } from '../actions/userMessages';
 
@@ -21,6 +22,8 @@ const userMessages = (state = initialState, action) => {
       return {...state, loading: true};
     case SET_USER_MESSAGES:
       return {...state, loading: false, messages: action.payload};
+    case ADD_SINGLE_MESSAGE:
+      return {...state, messages: [...state.messages, action.payload]};
     case SET_FETCH_USER_MESSAGES_FAILURE:
       return {...state, loading: false, error: action.payload};
     case SET_SEND_MESSAGE:

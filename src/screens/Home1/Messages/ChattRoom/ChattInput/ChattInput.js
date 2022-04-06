@@ -7,7 +7,7 @@ import {
   Keyboard,
   Modal,
 } from 'react-native';
-import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/dist/MaterialIcons';
 import Icon3 from 'react-native-vector-icons/dist/Entypo';

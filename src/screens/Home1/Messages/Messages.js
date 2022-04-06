@@ -21,13 +21,14 @@ import MessagesPlaceHolder from './PlaceHolders/MessagesPlaceHolder';
 function Messages({navigation}) {
   const dispatch = useDispatch();
   const {username, id} = useSelector(state => state.currentUser);
+  const {socket} = useSelector(state => state.socketReducer);
   const {messages, messagesToBeSent, chattRooms, loading} = useSelector(
     state => state.userMessages,
   );
 
   useEffect(() => {
     dispatch(fetchUserMessages(username, id));
-    dispatch(sendAllMessages(messagesToBeSent));
+    dispatch(sendAllMessages({AllMessages: messagesToBeSent, socket}));
   }, []);
 
   //refresh chatt rooms

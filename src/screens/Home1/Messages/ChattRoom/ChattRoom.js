@@ -1,11 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import {
-  View,
-  Text,
-  KeyboardAvoidingView,
-  Platform,
-  FlatList,
-} from 'react-native';
+import React, {useEffect} from 'react';
+import {View, KeyboardAvoidingView, Platform, FlatList} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   fetchUserMessages,
@@ -20,6 +14,7 @@ const ChattRoom = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {username, image, id} = useSelector(state => state.currentUser);
   const {messages, messagesToBeSent} = useSelector(state => state.userMessages);
+  const {socket} = useSelector(state => state.socketReducer);
 
   // console.log('tobe sent');
   // console.log(messagesToBeSent);
@@ -30,7 +25,7 @@ const ChattRoom = ({route, navigation}) => {
   //tobe removed
   useEffect(() => {
     dispatch(fetchUserMessages(username, id));
-    dispatch(sendAllMessages(messagesToBeSent));
+    dispatch(sendAllMessages({AllMessages: messagesToBeSent, socket}));
   }, [messagesToBeSent]);
 
   //refresh chattrooms

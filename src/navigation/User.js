@@ -1,5 +1,5 @@
-// import 'react-native-gesture-handler';
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
 import {StatusBar, TouchableWithoutFeedback, View, Text} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -26,22 +26,33 @@ import UpdateDescription from '../screens/Profile/UpdateDescription';
 import UsersList from '../screens/Home1/Messages/NewChatt/UsersList';
 import ChattRoom from '../screens/Home1/Messages/ChattRoom/ChattRoom';
 import ChattRoomHeader from '../screens/Home1/Messages/ChattRoom/ChattRoomHeader/ChattRoomHeader';
-
-//messages
-import {sendMessage, getAllMessages} from '../controller/userMessagesSync';
 import ChattFilePreview from '../screens/Home1/Messages/ChattFilePreview/ChattFilePreview';
+
+//socket
+window.navigator.userAgent = 'react-native';
+import io from 'socket.io-client';
+import {socketIoServerUrl} from '../Config';
+import {setOnlineUsers} from '../actions/onlineUsers';
+import {addSingleMessage, fetchUserMessages} from '../actions/userMessages';
+import {setSocket} from '../actions/socket';
+import Shorts from '../screens/Home1/Shorts';
+import ShortPreview from '../screens/Home1/Shorts/New/ShortPreview';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 const HomeTabs1 = ({navigation}) => {
+  const [backgroundColor, setBackgroundColor] = useState(WimitiColors.white2);
+  const [activeColor, setActiveColor] = useState(WimitiColors.blue);
+  const [inactiveColor, setInactiveColor] = useState(WimitiColors.dark);
   return (
     <Tab.Navigator
       screenOptions={{
         tabBarShowLabel: false,
-        tabBarActiveTintColor: WimitiColors.blue,
-        tabBarInactiveTintColor: WimitiColors.dark,
+        tabBarActiveTintColor: activeColor,
+        tabBarInactiveTintColor: inactiveColor,
         headerShown: false,
+        tabBarStyle: {position: 'absolute', bottom: 0, backgroundColor},
       }}>
       <Tab.Screen
         name="Home"
@@ -50,6 +61,13 @@ const HomeTabs1 = ({navigation}) => {
           tabBarIcon: ({focused, color, size}) => {
             // const icon = focused ? 'settings' : 'home';
             return <Icon name="home" color={color} size={size} />;
+          },
+        }}
+        listeners={{
+          tabPress: e => {
+            setBackgroundColor(WimitiColors.white2);
+            setActiveColor(WimitiColors.blue);
+            setInactiveColor(WimitiColors.dark);
           },
         }}
       />
@@ -69,17 +87,18 @@ const HomeTabs1 = ({navigation}) => {
         }}
       />
       <Tab.Screen
-        name="Edit"
-        component={CreatePost}
+        name="Shorts"
+        component={Shorts}
         options={{
           tabBarIcon: ({focused, color, size}) => {
-            return <Icon2 name="edit" color={color} size={size} />;
+            return <Icon5 name="motion-play" color={color} size={size} />;
           },
         }}
         listeners={{
           tabPress: e => {
-            e.preventDefault();
-            navigation.navigate('CreatePost');
+            setBackgroundColor(WimitiColors.black);
+            setActiveColor(WimitiColors.white);
+            setInactiveColor(WimitiColors.darkGray);
           },
         }}
       />
@@ -103,56 +122,28 @@ const HomeTabs1 = ({navigation}) => {
 };
 
 const User = () => {
-  // const sendAllMessages = async () => {
-  //   const i = 1;
-  //   if (
-  //     typeof context.userMessagesToBeSent[i] != 'undefined' &&
-  //     context.userMessagesToBeSent[i].sent == false
-  //   ) {
-  //     try {
-  //       const response = await sendMessage(context.userMessagesToBeSent[i]);
-  //       console.log(response);
-  //       if (response.type == 'success') {
-  //         //remove the message from sending list
-  //         const newMessages = [...context.userMessagesToBeSent];
-  //         newMessages.splice(i, 1);
-  //         context.setUserMessagesToBeSent([...newMessages]);
+  const dispatch = useDispatch();
+  const currentUserObj = useSelector(state => state.currentUser);
+  const {socket} = useSelector(state => state.socketReducer);
 
-  //         //TODO
-  //         //check if we have rendered this message else display
-  //         //otherwise display it
-  //       } else {
-  //         //error trying to send the message
-  //         console.log('message not sent');
-  //       }
-  //     } catch (error) {
-  //       console.log('An error occured while sending a message ', error);
-  //     }
-  //   }
-  // };
+  //connect to the socket io server
+  useEffect(() => {
+    dispatch(setSocket(io(socketIoServerUrl)));
+  }, []);
+  //connect to the socket io server
 
-  // const getUserMessages = async () => {
-  //   try {
-  //     const response = await getAllMessages(context.username, context.userId);
-  //     if (response.type == 'success') {
-  //       context.setUserMessages(response.messages);
-  //       // console.log(context.userMessages.length);
-  //       getUserMessages();
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
-  //watch for messages tobe sent
-  // useEffect(() => {
-  //   sendAllMessages();
-  // }, [context.userMessagesToBeSent]);
-
-  // //watch user messages
-  // useEffect(() => {
-  //   getUserMessages();
-  // });
+  useEffect(() => {
+    socket?.emit('addUser', currentUserObj.username);
+    socket?.on('getAllOnlineUsers', users => {
+      console.log('all connected users', users);
+      dispatch(setOnlineUsers(users));
+    });
+    socket?.on('getMessage', message => {
+      // console.log('got message', message);
+      // dispatch(addSingleMessage(message));
+      dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
+    });
+  }, [socket]);
 
   return (
     <NavigationContainer>
@@ -283,6 +274,18 @@ const User = () => {
             headerShadowVisible: false,
             headerTransparent: true,
             headerTintColor: WimitiColors.white,
+          }}
+        />
+
+        <Stack.Screen
+          name="ShortPreview"
+          component={ShortPreview}
+          options={{
+            title: 'Video Preview',
+            headerShadowVisible: false,
+            headerTransparent: true,
+            headerTintColor: WimitiColors.white,
+            headerBackTitleVisible: false,
           }}
         />
 
