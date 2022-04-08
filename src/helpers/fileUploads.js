@@ -58,7 +58,7 @@ const uploadShort = (file, username) => {
         const {fileName} = response;
         resolve({status: response.type, fileName});
       } else {
-        reject(response.type);
+        reject(response);
       }
     };
     xhr.send(formData);

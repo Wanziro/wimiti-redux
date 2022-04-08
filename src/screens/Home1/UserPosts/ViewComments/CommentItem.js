@@ -13,10 +13,12 @@ import Icon2 from 'react-native-vector-icons/dist/SimpleLineIcons';
 import {backendUrl, backendUserImagesUrl} from '../../../../Config';
 import TimeAgo from 'react-native-timeago';
 import Axios from 'axios';
-import {UserMainContext} from '../../../Context/UserContext';
+import {useSelector} from 'react-redux';
 
 function CommentItem({comment}) {
-  const context = useContext(UserMainContext);
+  const {image, fname, lname, username, id} = useSelector(
+    state => state.currentUser,
+  );
   const [isLiking, setIsLiking] = useState(false);
   const [isDisliking, setIsDisliking] = useState(false);
   const [isDeletingComment, setisDeletingComment] = useState(false);
@@ -25,8 +27,8 @@ function CommentItem({comment}) {
     if (!isLiking) {
       setIsLiking(true);
       Axios.post(backendUrl + '/handleLikeComment', {
-        username: context.username,
-        userId: context.userId,
+        username: username,
+        userId: id,
         postId: comment.postId,
         commentId: comment.id,
       })
@@ -45,8 +47,8 @@ function CommentItem({comment}) {
     if (!isDisliking) {
       setIsDisliking(true);
       Axios.post(backendUrl + '/handleDislikeComment', {
-        username: context.username,
-        userId: context.userId,
+        username: username,
+        userId: id,
         postId: comment.postId,
         commentId: comment.id,
       })
@@ -84,8 +86,8 @@ function CommentItem({comment}) {
   const handleCommentRemove = () => {
     setisDeletingComment(true);
     Axios.post(backendUrl + '/handleDeleteComment', {
-      username: context.username,
-      userId: context.userId,
+      username: username,
+      userId: id,
       postId: comment.postId,
       commentId: comment.id,
     })
@@ -109,7 +111,7 @@ function CommentItem({comment}) {
         <View>
           {comment.image != null && comment.image.trim() != '' ? (
             <Image
-              source={{uri: backendUserImagesUrl + context.userImage}}
+              source={{uri: backendUserImagesUrl + image}}
               style={{height: 40, width: 40, borderRadius: 50}}
             />
           ) : (
@@ -198,7 +200,7 @@ function CommentItem({comment}) {
               </TouchableWithoutFeedback>
             </View>
           </View>
-          {comment.owner.username === context.username && (
+          {comment.owner.username === username && (
             <View style={{marginTop: 5}}>
               <TouchableWithoutFeedback onPress={() => confirmDelete()}>
                 {isDeletingComment ? (

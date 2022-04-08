@@ -24,7 +24,6 @@ import {
 } from '../../../Config';
 import PostItemCommentSection from './PostItemCommentSection';
 import Axios from 'axios';
-import {UserMainContext} from '../../Context/UserContext';
 import Video from './Video/Video';
 import TimeAgo from 'react-native-timeago';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
@@ -35,7 +34,7 @@ const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
-  const {image, fname, lname, username} = useSelector(
+  const {image, fname, lname, username, id} = useSelector(
     state => state.currentUser,
   );
   const postContent = JSON.parse(post.content);
@@ -114,7 +113,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
     Axios.post(backendUrl + '/handlePostDislike', {
       postId: post.id,
       username: username,
-      userId: context.userId,
+      userId: id,
     })
       .then(res => {
         // console.log(res.data);
@@ -151,7 +150,7 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
     Axios.post(backendUrl + '/deletePost', {
       postId: post.id,
       username: username,
-      userId: context.userId,
+      userId: id,
     })
       .then(res => {
         console.log(res.data);

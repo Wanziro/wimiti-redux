@@ -16,12 +16,12 @@ import Skeleton from './Skeleton';
 import Axios from 'axios';
 import {backendUrl} from '../../../../Config';
 import CommentsList from './CommentsList';
-import {UserMainContext} from '../../../Context/UserContext';
+import {useSelector} from 'react-redux';
 
 const width = Dimensions.get('window').width;
 
 const ViewComments = ({hideCommentsPanel, commentsPostId}) => {
-  const context = useContext(UserMainContext);
+  const {username, id} = useSelector(state => state.currentUser);
   const [comments, setComments] = useState([]);
   const [isLoadingComments, setIsLoadingComments] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
@@ -54,34 +54,35 @@ const ViewComments = ({hideCommentsPanel, commentsPostId}) => {
   useEffect(() => {
     let sub = true;
     if (sub) {
-      Axios.post(backendUrl + '/getPostComments', {postId: commentsPostId})
-        .then(res => {
-          if (sub) {
-            console.log('this is a comments loaded');
-            setIsLoadingComments(false);
-            setComments(res.data);
-            if (savedComment) {
-              scrollViewRef.current.scrollToEnd({animated: true});
-              setSavedComment(false);
-            }
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+      fetchComments();
     }
     return () => {
       sub = false;
     };
-  }, [comments]);
+  }, []);
+
+  const fetchComments = () => {
+    Axios.post(backendUrl + '/getPostComments', {postId: commentsPostId})
+      .then(res => {
+        setIsLoadingComments(false);
+        setComments(res.data);
+        if (savedComment) {
+          scrollViewRef.current.scrollToEnd({animated: true});
+          setSavedComment(false);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
 
   const handleComment = () => {
     if (comment.trim() != '') {
       setisSavingComment(true);
       Axios.post(backendUrl + '/saveComment', {
         postId: commentsPostId,
-        username: context.username,
-        userId: context.userId,
+        username: username,
+        userId: id,
         comment,
       })
         .then(res => {
@@ -89,6 +90,7 @@ const ViewComments = ({hideCommentsPanel, commentsPostId}) => {
           setComment('');
           setisSavingComment(false);
           setSavedComment(true);
+          fetchComments();
         })
         .catch(error => {
           // alert(error);

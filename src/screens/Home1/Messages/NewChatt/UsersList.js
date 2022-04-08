@@ -28,28 +28,6 @@ function UsersList({navigation}) {
 
   useEffect(() => {
     dispatch(fetchUserSuggestions(username, id));
-    // let sub = true;
-
-    // Axios.post(backendUrl + '/suggestions', {
-    //   username: context.username,
-    //   userId: context.userId,
-    // })
-    //   .then(res => {
-    //     if (sub) {
-    //       setSuggestions(res.data);
-    //       setIsLoadingSuggestions(false);
-    //     }
-    //   })
-    //   .catch(err => {
-    //     if (sub) {
-    //       setIsLoadingSuggestions(false);
-    //     }
-    //     console.log(err);
-    //   });
-
-    // return () => {
-    //   sub = false;
-    // };
   }, []);
 
   return (
@@ -86,7 +64,7 @@ function UsersList({navigation}) {
                         marginVertical: 10,
                       }}>
                       <View>
-                        {user.image.trim() != '' && user.image != null ? (
+                        {user?.image.trim() != '' && user.image != null ? (
                           <Image
                             source={{uri: backendUserImagesUrl + user.image}}
                             style={{width: 50, height: 50, borderRadius: 100}}

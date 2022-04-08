@@ -6,43 +6,39 @@ import {
   TouchableWithoutFeedback,
   SafeAreaView,
 } from 'react-native';
-import {UserMainContext} from '../Context/UserContext';
 import WimitiColors from '../../WimitiColors';
 import Axios from 'axios';
 import {backendUrl} from '../../Config';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux';
+import {setCurrentUserLname} from '../../actions/currentUser';
 
 function UpdateLname({navigation}) {
-  const context = useContext(UserMainContext);
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.currentUser);
   const [fname, setFname] = useState('');
   const [isSaving, setisSaving] = useState(false);
 
   const fnameRef = useRef();
 
   useEffect(() => {
-    if (context.userLname != '' && context.userLname != null) {
-      setFname(context.userLname);
+    if (currentUser.lname != '' && currentUser.lname != null) {
+      setFname(currentUser.lname);
     }
   }, []);
-
-  const saveChanges = async () => {
-    await AsyncStorage.setItem('user_lname', fname);
-    await context.setUserLname(fname);
-    navigation.navigate('Profile');
-  };
 
   const handleSave = () => {
     if (!isSaving && fname.trim() != '') {
       setisSaving(true);
       Axios.post(backendUrl + '/updateLname', {
         fname,
-        username: context.username,
-        userId: context.userId,
+        username: currentUser.username,
+        userId: currentUser.id,
       })
         .then(res => {
           console.log(res.data);
           if (res.data.type == 'success') {
-            saveChanges();
+            dispatch(setCurrentUserLname(fname));
+            navigation.navigate('Profile');
           } else {
             Alert.alert(
               'Awq!',

@@ -57,7 +57,7 @@ const ChatItem = ({room, username, navigation}) => {
           marginVertical: 10,
         }}>
         <View>
-          {getImageToDisplay().trim() === '' || getImageToDisplay() == null ? (
+          {getImageToDisplay()?.trim() === '' || getImageToDisplay() == null ? (
             <View
               style={{
                 width: 50,

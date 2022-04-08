@@ -1,4 +1,4 @@
-import React, {useState, useEffect, useRef, useContext} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   SafeAreaView,
   TextInput,
@@ -21,17 +21,17 @@ import DocumentPicker from 'react-native-document-picker';
 import SlidingUpPanel from 'rn-sliding-up-panel';
 import SelectedImageItem from './SelectedImageItem';
 import {backendUrl} from '../../../Config';
-import {UserMainContext} from '../../Context/UserContext';
 import Axios from 'axios';
 import {createThumbnail} from 'react-native-create-thumbnail';
 import VideoModal from './VideoModal/VideoModal';
+import {useSelector} from 'react-redux';
 
 const height = Dimensions.get('window').height;
 const width = Dimensions.get('window').width;
 const pannelHeight = height / 2 + 50;
 
 const CreatePost = ({navigation}) => {
-  const context = useContext(UserMainContext);
+  const {username, id} = useSelector(state => state.currentUser);
   const [selecteImages, setSelecteImages] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
   const [videoMainThumbnail, setVideoMainThumbnail] = useState(null);
@@ -128,7 +128,7 @@ const CreatePost = ({navigation}) => {
 
       var formData = new FormData();
       formData.append('file', photo);
-      formData.append('username', context.username);
+      formData.append('username', username);
 
       var xhr = new XMLHttpRequest();
       xhr.open('POST', url);
@@ -177,7 +177,7 @@ const CreatePost = ({navigation}) => {
 
       var formData = new FormData();
       formData.append('file', photo);
-      formData.append('username', context.username);
+      formData.append('username', username);
 
       var xhr = new XMLHttpRequest();
       xhr.open('POST', url);
@@ -230,8 +230,8 @@ const CreatePost = ({navigation}) => {
       setIsSaving(true);
       Axios.post(backendUrl + '/savePost', {
         post: JSON.stringify(post),
-        username: context.username,
-        userId: context.userId,
+        username: username,
+        userId: id,
       })
         .then(res => {
           console.log(res.data);
@@ -328,8 +328,8 @@ const CreatePost = ({navigation}) => {
             setIsSaving(true);
             Axios.post(backendUrl + '/savePost', {
               post: JSON.stringify(post),
-              username: context.username,
-              userId: context.userId,
+              username: username,
+              userId: id,
             })
               .then(res => {
                 console.log(res.data);
