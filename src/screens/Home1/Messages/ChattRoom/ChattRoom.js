@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, KeyboardAvoidingView, Platform, FlatList} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
@@ -15,9 +15,7 @@ const ChattRoom = ({route, navigation}) => {
   const {username, image, id} = useSelector(state => state.currentUser);
   const {messages, messagesToBeSent} = useSelector(state => state.userMessages);
   const {socket} = useSelector(state => state.socketReducer);
-
-  // console.log('tobe sent');
-  // console.log(messagesToBeSent);
+  const [replyMessage, setReplyMessage] = useState(null);
 
   const keyExtractor = (item, index) => index.toString();
   const user = route.params.user;
@@ -58,6 +56,7 @@ const ChattRoom = ({route, navigation}) => {
       <View style={{backgroundColor: WimitiColors.white, flex: 1}}>
         <FlatList
           inverted
+          disableVirtualization={false}
           data={uniqueArray([...messagesToBeSent, ...messages])}
           keyExtractor={keyExtractor}
           renderItem={({item}) => (
@@ -65,6 +64,7 @@ const ChattRoom = ({route, navigation}) => {
               item={item}
               navigation={navigation}
               currentUsername={username}
+              setReplyMessage={setReplyMessage}
               user={user}
             />
           )}
@@ -72,10 +72,13 @@ const ChattRoom = ({route, navigation}) => {
           onEndReached={() => dispatch(fetchUserMessages(username, id))}
           style={{flex: 1}}
         />
+
         <ChattInput
           user={user}
           currentUsername={username}
           currentUserImage={image}
+          replyMessage={replyMessage}
+          setReplyMessage={setReplyMessage}
         />
       </View>
     </KeyboardAvoidingView>
