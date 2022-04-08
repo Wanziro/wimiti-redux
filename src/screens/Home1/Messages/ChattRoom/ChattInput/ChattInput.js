@@ -1,27 +1,37 @@
-import React, {useState, useRef, useContext} from 'react';
+import React, {useState, useRef} from 'react';
 import {
   View,
   TextInput,
   Dimensions,
+  Image,
   Pressable,
   Keyboard,
   Modal,
+  Text,
 } from 'react-native';
 import {launchImageLibrary} from 'react-native-image-picker';
 import Icon from 'react-native-vector-icons/dist/SimpleLineIcons';
 import Icon2 from 'react-native-vector-icons/dist/MaterialIcons';
 import Icon3 from 'react-native-vector-icons/dist/Entypo';
 import Icon4 from 'react-native-vector-icons/dist/Ionicons';
+import Icon5 from 'react-native-vector-icons/dist/Octicons';
 import WimitiColors from '../../../../../WimitiColors';
 import EmojiSelector from 'react-native-emoji-selector';
 import {useDispatch} from 'react-redux';
 import {setSendMessage} from '../../../../../actions/userMessages';
 import SendFileModal from './SendFileModal';
+import {backendChattFilesUrl} from '../../../../../Config';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
-function ChattInput({user, currentUsername, currentUserImage}) {
+function ChattInput({
+  user,
+  currentUsername,
+  currentUserImage,
+  setReplyMessage,
+  replyMessage,
+}) {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const [isSendingMessage, setIsSendingMessage] = useState(false);
@@ -29,6 +39,8 @@ function ChattInput({user, currentUsername, currentUserImage}) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const inputRef = useRef(null);
+
+  let replyFile = '';
 
   const handleFileSelect = async () => {
     try {
@@ -46,36 +58,121 @@ function ChattInput({user, currentUsername, currentUserImage}) {
   const handleSendMessage = async () => {
     if (message.trim() != '') {
       setIsSendingMessage(true);
-
-      const newMessage = {
-        sender: currentUsername,
-        senderImage: currentUserImage,
-        receiver: user.username,
-        receiverImage: user.image,
-        textMessage: message,
-        file: '',
-        date: new Date(),
-        sent: false,
-        delivered: false,
-        seen: false,
-      };
+      let newMessage;
+      if (replyMessage !== null && replyMessage !== '') {
+        newMessage = {
+          sender: currentUsername,
+          senderImage: currentUserImage,
+          receiver: user.username,
+          receiverImage: user.image,
+          textMessage: message,
+          file: '',
+          repliedMessage: JSON.stringify(replyMessage),
+          date: new Date(),
+          sent: false,
+          delivered: false,
+          seen: false,
+        };
+      } else {
+        newMessage = {
+          sender: currentUsername,
+          senderImage: currentUserImage,
+          receiver: user.username,
+          receiverImage: user.image,
+          textMessage: message,
+          file: '',
+          repliedMessage: '',
+          date: new Date(),
+          sent: false,
+          delivered: false,
+          seen: false,
+        };
+      }
       await dispatch(setSendMessage(newMessage));
       setMessage('');
+      setReplyMessage(null);
       setIsSendingMessage(false);
     } else {
       inputRef.current.focus();
     }
   };
+
+  if (replyMessage?.file !== null) {
+    try {
+      replyFile = JSON.parse(replyMessage?.file);
+    } catch (error) {
+      replyFile = replyMessage?.file;
+    }
+  }
   return (
-    <View>
+    <View
+      style={{
+        borderTopColor: WimitiColors.gray,
+        borderTopWidth: 1,
+        padding: 10,
+      }}>
+      {replyMessage !== null && (
+        <View
+          style={{
+            marginVertical: 5,
+            backgroundColor: WimitiColors.lightGray,
+            padding: 10,
+            borderRadius: 10,
+            borderLeftColor: WimitiColors.blue,
+            borderLeftWidth: 5,
+            position: 'relative',
+          }}>
+          <View
+            style={{
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              alignContent: 'center',
+            }}>
+            <View>
+              {replyMessage.sender === currentUsername ? (
+                <Text style={{color: WimitiColors.blue}}>You</Text>
+              ) : (
+                <Text numberOfLines={1} style={{color: WimitiColors.blue}}>
+                  {replyMessage.sender}
+                </Text>
+              )}
+              <Text style={{color: WimitiColors.darkGray}}>
+                {replyMessage.textMessage}
+              </Text>
+            </View>
+            {replyFile !== '' && (
+              <>
+                {replyFile.type.split('/')[0] === 'image' ? (
+                  <Image
+                    source={{uri: backendChattFilesUrl + replyFile.uri}}
+                    style={{width: 50, height: 50}}
+                  />
+                ) : (
+                  <Icon5 name="video" size={50} color={WimitiColors.blue} />
+                )}
+              </>
+            )}
+          </View>
+          <View style={{position: 'absolute', top: 0, right: 0}}>
+            <View
+              style={{
+                backgroundColor: WimitiColors.lightGray,
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 100,
+              }}>
+              <Pressable onPress={() => setReplyMessage(null)}>
+                <Icon4 name="close" size={30} color={WimitiColors.blue} />
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      )}
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'flex-end',
-          borderTopColor: WimitiColors.gray,
-          borderTopWidth: 1,
-          padding: 10,
         }}>
         <View
           style={{width: width - 90, position: 'relative', marginRight: 10}}>
