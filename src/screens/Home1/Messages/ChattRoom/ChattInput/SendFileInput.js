@@ -12,23 +12,43 @@ function SendFileInput({
   selectedFile,
   setSelectedFile,
   setShowModal,
+  replyMessage,
 }) {
   const dispatch = useDispatch();
   const [message, setMessage] = useState('');
   const handleSendMessage = async () => {
     if (selectedFile !== null) {
-      const newMessage = {
-        sender: currentUsername,
-        senderImage: currentUserImage,
-        receiver: user.username,
-        receiverImage: user.image,
-        textMessage: message,
-        file: selectedFile,
-        date: new Date(),
-        sent: false,
-        delivered: false,
-        seen: false,
-      };
+      let newMessage;
+      if (replyMessage !== null && replyMessage !== '') {
+        newMessage = {
+          sender: currentUsername,
+          senderImage: currentUserImage,
+          receiver: user.username,
+          receiverImage: user.image,
+          textMessage: message,
+          repliedMessage: JSON.stringify(replyMessage),
+          file: selectedFile,
+          date: new Date(),
+          sent: false,
+          delivered: false,
+          seen: false,
+        };
+      } else {
+        newMessage = {
+          sender: currentUsername,
+          senderImage: currentUserImage,
+          receiver: user.username,
+          receiverImage: user.image,
+          textMessage: message,
+          repliedMessage: '',
+          file: selectedFile,
+          date: new Date(),
+          sent: false,
+          delivered: false,
+          seen: false,
+        };
+      }
+
       await dispatch(setSendMessage(newMessage));
       setMessage('');
       setShowModal(false);

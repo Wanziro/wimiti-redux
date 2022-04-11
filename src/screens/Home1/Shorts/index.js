@@ -26,6 +26,7 @@ function Shorts({navigation}) {
         selectionLimit: 1,
         mediaType: 'video',
         durationLimit: 60,
+        videoQuality: 'low',
       });
       navigation.navigate('ShortPreview', {videoFile: result.assets[0]});
     } catch (error) {

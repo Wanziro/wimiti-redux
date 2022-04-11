@@ -12,6 +12,7 @@ function SendFileModal({
   setSelectedFile,
   currentUsername,
   currentUserImage,
+  replyMessage,
   setShowModal,
   user,
 }) {
@@ -57,6 +58,7 @@ function SendFileModal({
           selectedFile={selectedFile}
           setShowModal={setShowModal}
           setSelectedFile={setSelectedFile}
+          replyMessage={replyMessage}
         />
       </View>
     </View>

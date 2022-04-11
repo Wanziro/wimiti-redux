@@ -181,6 +181,7 @@ function MessageItem({
                               style={{
                                 width: width - 100,
                                 height: undefined,
+                                borderRadius: 10,
                                 aspectRatio: 1,
                               }}
                             />
@@ -339,6 +340,7 @@ function MessageItem({
                               style={{
                                 width: width - 100,
                                 height: undefined,
+                                borderRadius: 10,
                                 aspectRatio: 1,
                               }}
                             />

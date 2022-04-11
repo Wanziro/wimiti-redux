@@ -47,6 +47,7 @@ function ChattInput({
       const result = await launchImageLibrary({
         selectionLimit: 1,
         mediaType: 'mixed',
+        videoQuality: 'low',
       });
       setSelectedFile(result.assets[0]);
       setShowModal(true);
@@ -289,6 +290,7 @@ function ChattInput({
           setSelectedFile={setSelectedFile}
           currentUsername={currentUsername}
           currentUserImage={currentUserImage}
+          replyMessage={replyMessage}
           user={user}
         />
       </Modal>

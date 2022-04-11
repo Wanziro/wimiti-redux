@@ -43,7 +43,12 @@ function VideoThumbnail({file, messageId}) {
         <View style={{position: 'relative'}}>
           <Image
             source={{uri: thumbnail}}
-            style={{width: width - 100, height: undefined, aspectRatio: 1}}
+            style={{
+              width: width - 100,
+              height: undefined,
+              borderRadius: 10,
+              aspectRatio: 1,
+            }}
           />
           <View
             style={{
