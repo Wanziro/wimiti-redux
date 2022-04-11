@@ -12,5 +12,6 @@ module.exports = {
   green: '#027339',
   red: '#730B02',
   fbLightGray: '#E9EBEE',
+  fbLightGrayDark: 'rgb(225, 227, 230)',
   fbLightBlue: '#00D6FF',
 };
