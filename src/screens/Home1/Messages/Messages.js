@@ -13,6 +13,7 @@ import ChatList from './ChatList/ChatList';
 import {useDispatch, useSelector} from 'react-redux';
 import {
   fetchUserMessages,
+  markAllMessagesAsDelivered,
   organiseChattRooms,
   sendAllMessages,
 } from '../../../actions/userMessages';
@@ -29,6 +30,7 @@ function Messages({navigation}) {
   useEffect(() => {
     dispatch(fetchUserMessages(username, id));
     dispatch(sendAllMessages({AllMessages: messagesToBeSent, socket}));
+    dispatch(markAllMessagesAsDelivered());
   }, []);
 
   //refresh chatt rooms

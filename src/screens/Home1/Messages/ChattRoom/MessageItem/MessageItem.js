@@ -402,7 +402,6 @@ function MessageItem({
                     alignItems: 'flex-end',
                   }}>
                   <TimeAgo time={item.date} />
-                  {handleDeliveryIcons()}
                 </View>
               </View>
             </SwipeRow>

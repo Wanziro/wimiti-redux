@@ -143,6 +143,12 @@ const User = () => {
       // dispatch(addSingleMessage(message));
       dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
     });
+
+    socket?.on('getMessagesSeen', receiver => {
+      //todo
+      //mark all messages as seen
+      dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
+    });
   }, [socket]);
 
   return (

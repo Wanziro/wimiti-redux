@@ -3,6 +3,7 @@ import {View, KeyboardAvoidingView, Platform, FlatList} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   fetchUserMessages,
+  markAllMessagesAsSeen,
   organiseChattRooms,
   sendAllMessages,
 } from '../../../../actions/userMessages';
@@ -19,6 +20,11 @@ const ChattRoom = ({route, navigation}) => {
 
   const keyExtractor = (item, index) => index.toString();
   const user = route.params.user;
+
+  //mark all messages as seen
+  useEffect(() => {
+    dispatch(markAllMessagesAsSeen(user.username));
+  }, []);
 
   //tobe removed
   useEffect(() => {

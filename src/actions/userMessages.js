@@ -150,3 +150,34 @@ export const fetchUserMessages = (username, userId) => dispatch => {
       dispatch(setFetchUserMessagesFailure(err.message));
     });
 };
+
+export const markAllMessagesAsDelivered = () => (dispatch, getState) => {
+  const {currentUser} = getState();
+  Axios.post(backendUrl + '/markAllMessagesAsDelivered', {
+    username: currentUser.username,
+  })
+    .then(res => {
+      console.log(res.data);
+    })
+    .catch(error => {
+      console.log('Error while marking all messages as delivered. ' + error);
+    });
+};
+
+export const markAllMessagesAsSeen = sender => (dispatch, getState) => {
+  const {currentUser, socketReducer} = getState();
+  Axios.post(backendUrl + '/markAllMessagesAsSeen', {
+    sender,
+    receiver: currentUser.username,
+  })
+    .then(res => {
+      console.log(res.data);
+      socketReducer.socket?.emit('markMessagesAsSeen', {
+        sender,
+        receiver: currentUser.username,
+      });
+    })
+    .catch(error => {
+      console.log('Error while marking all messages as seen. ' + error);
+    });
+};

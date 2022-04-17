@@ -1,2 +1,5 @@
 remove libraries:
 react native document picker
+
+
+Notify the socket after marking messages as sent or delivered
