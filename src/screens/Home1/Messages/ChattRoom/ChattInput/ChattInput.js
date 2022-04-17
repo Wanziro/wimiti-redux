@@ -21,6 +21,7 @@ import {useDispatch} from 'react-redux';
 import {setSendMessage} from '../../../../../actions/userMessages';
 import SendFileModal from './SendFileModal';
 import {backendChattFilesUrl} from '../../../../../Config';
+import uuid from 'react-native-uuid';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
@@ -62,6 +63,7 @@ function ChattInput({
       let newMessage;
       if (replyMessage !== null && replyMessage !== '') {
         newMessage = {
+          uuid: uuid.v4(),
           sender: currentUsername,
           senderImage: currentUserImage,
           receiver: user.username,
@@ -76,6 +78,7 @@ function ChattInput({
         };
       } else {
         newMessage = {
+          uuid: uuid.v4(),
           sender: currentUsername,
           senderImage: currentUserImage,
           receiver: user.username,

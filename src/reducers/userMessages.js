@@ -23,7 +23,7 @@ const userMessages = (state = initialState, action) => {
     case SET_USER_MESSAGES:
       return {...state, loading: false, messages: action.payload};
     case ADD_SINGLE_MESSAGE:
-      return {...state, messages: [...state.messages, action.payload]};
+      return {...state, messages: [action.payload, ...state.messages]};
     case SET_FETCH_USER_MESSAGES_FAILURE:
       return {...state, loading: false, error: action.payload};
     case SET_SEND_MESSAGE:

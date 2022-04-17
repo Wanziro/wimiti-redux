@@ -4,6 +4,7 @@ import WimitiColors from '../../../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import {useDispatch} from 'react-redux';
 import {setSendMessage} from '../../../../../actions/userMessages';
+import uuid from 'react-native-uuid';
 
 function SendFileInput({
   user,
@@ -21,6 +22,7 @@ function SendFileInput({
       let newMessage;
       if (replyMessage !== null && replyMessage !== '') {
         newMessage = {
+          uuid: uuid.v4(),
           sender: currentUsername,
           senderImage: currentUserImage,
           receiver: user.username,
@@ -35,6 +37,7 @@ function SendFileInput({
         };
       } else {
         newMessage = {
+          uuid: uuid.v4(),
           sender: currentUsername,
           senderImage: currentUserImage,
           receiver: user.username,

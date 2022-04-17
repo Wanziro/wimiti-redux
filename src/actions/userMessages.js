@@ -93,6 +93,7 @@ export const sendAllMessages =
             const sortedMessages = AllMessages.filter(
               message => message.date != messageToBeSent.date,
             );
+            dispatch(addSingleMessage(messageFromServer));
             dispatch(removeMessageFromSendingList(sortedMessages));
           })
           .catch(error => {
@@ -119,6 +120,7 @@ export const sendAllMessages =
                 const sortedMessages = AllMessages.filter(
                   message => message.date != messageToBeSent.date,
                 );
+                dispatch(addSingleMessage(messageFromServer));
                 dispatch(removeMessageFromSendingList(sortedMessages));
               })
               .catch(error => {
