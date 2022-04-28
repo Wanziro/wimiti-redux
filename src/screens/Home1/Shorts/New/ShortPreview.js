@@ -57,6 +57,7 @@ function ShortPreview({route, navigation}) {
           date: date,
         })
           .then(res => {
+            console.log(res.data);
             if (res.data.type == 'success') {
               dispatch(fetchShorts());
               dispatch(setCurrentViewingIndex(0));

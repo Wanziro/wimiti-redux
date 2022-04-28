@@ -54,7 +54,12 @@ const Home = ({navigation}) => {
   return (
     <>
       <StatusBar backgroundColor={WimitiColors.white} barStyle="dark-content" />
-      <View style={{backgroundColor: WimitiColors.white, flex: 1}}>
+      <View
+        style={{
+          backgroundColor: WimitiColors.white,
+          flex: 1,
+          paddingBottom: 50,
+        }}>
         <SafeAreaView>
           <Header navigation={navigation} />
           <ScrollView

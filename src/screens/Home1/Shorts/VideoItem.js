@@ -67,8 +67,8 @@ function VideoItem({videoObj}) {
                 alignItems: 'center',
                 justifyContent: 'space-between',
               }}>
-              {videoObj.owner.image.trim() !== '' &&
-              videoObj.owner.image !== null ? (
+              {videoObj?.owner?.image !== null &&
+              videoObj?.owner?.image.trim() !== '' ? (
                 <View>
                   <Image
                     source={{uri: backendUserImagesUrl + videoObj.owner.image}}
@@ -83,6 +83,7 @@ function VideoItem({videoObj}) {
                     justifyContent: 'center',
                     alignItems: 'center',
                     backgroundColor: WimitiColors.black,
+                    borderRadius: 100,
                   }}>
                   <Icon name="user" size={30} color={WimitiColors.white} />
                 </View>
