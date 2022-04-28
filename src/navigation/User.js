@@ -125,10 +125,25 @@ const User = () => {
   const dispatch = useDispatch();
   const currentUserObj = useSelector(state => state.currentUser);
   const {socket} = useSelector(state => state.socketReducer);
+  let connectToSocketInterval;
+
+  const handleSocketConnection = () => {
+    if (socket?.connected) {
+    } else {
+      console.log('Not connected to the socket');
+      dispatch(setSocket(io(socketIoServerUrl)));
+    }
+  };
 
   //connect to the socket io server
   useEffect(() => {
-    dispatch(setSocket(io(socketIoServerUrl)));
+    connectToSocketInterval = setInterval(() => {
+      handleSocketConnection();
+    }, 5000);
+    handleSocketConnection();
+    return () => {
+      clearInterval(connectToSocketInterval);
+    };
   }, []);
   //connect to the socket io server
 
