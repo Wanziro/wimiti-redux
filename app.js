@@ -43,6 +43,15 @@ io.on("connection", (socket) => {
     }
   });
 
+  socket.on("markMessagesAsSeen", ({ sender, receiver }) => {
+    const user = findUser(sender);
+    if (user !== undefined) {
+      io.to(user.socketId).emit("getMessagesSeen", receiver);
+      console.log("Message seen notification sent to " + receiver);
+    }
+  });
+
+  //send to all users
   socket.on("disconnect", () => {
     console.log("A user disconnected");
     removeUser(socket.id);
@@ -50,7 +59,11 @@ io.on("connection", (socket) => {
   });
 });
 
-const PORT = 5000;
-server.listen(PORT, () => {
-  console.log(`Server started on port ${PORT}`);
+app.get("/", (req, res) => {
+  res.send("<h1>Wimiti socket</h1>");
+});
+
+const port = process.env.PORT || 5000;
+server.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
