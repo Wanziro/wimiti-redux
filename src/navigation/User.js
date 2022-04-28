@@ -139,7 +139,7 @@ const User = () => {
   useEffect(() => {
     connectToSocketInterval = setInterval(() => {
       handleSocketConnection();
-    }, 5000);
+    }, 10000);
     handleSocketConnection();
     return () => {
       clearInterval(connectToSocketInterval);
@@ -155,7 +155,7 @@ const User = () => {
     });
     socket?.on('getMessage', message => {
       // console.log('got message', message);
-      // dispatch(addSingleMessage(message));
+      dispatch(addSingleMessage(message));
       dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
     });
 
