@@ -6,6 +6,7 @@ import userMessages from './userMessages';
 import onlineUsers from './onlineUsers';
 import socketReducer from './socket';
 import shorts from './shorts';
+import posts from './posts';
 
 const rootReducer = combineReducers({
   currentUser,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   onlineUsers,
   socketReducer,
   shorts,
+  posts,
 });
 
 export default rootReducer;

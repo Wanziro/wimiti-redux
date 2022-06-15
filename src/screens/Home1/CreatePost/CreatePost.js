@@ -24,13 +24,14 @@ import {backendUrl} from '../../../Config';
 import Axios from 'axios';
 import {createThumbnail} from 'react-native-create-thumbnail';
 import VideoModal from './VideoModal/VideoModal';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchPosts} from '../../../actions/posts';
 
 const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
 const pannelHeight = height / 2 + 50;
 
 const CreatePost = ({navigation}) => {
+  const dispatch = useDispatch();
   const {username, id} = useSelector(state => state.currentUser);
   const [selecteImages, setSelecteImages] = useState([]);
   const [selectedVideo, setSelectedVideo] = useState(null);
@@ -238,6 +239,7 @@ const CreatePost = ({navigation}) => {
           setisUploadingImages(false);
           setIsSaving(false);
           if (res.data.type == 'success') {
+            dispatch(fetchPosts());
             navigation.navigate('HomeTabs1', {screen: 'Home'});
           } else {
             setShowModal(false);
