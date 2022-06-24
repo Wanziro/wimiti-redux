@@ -27,7 +27,6 @@ import Axios from 'axios';
 import Video from './Video/Video';
 import TimeAgo from 'react-native-timeago';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
-import db from '../../../controller/db';
 import {useSelector} from 'react-redux';
 
 const width = Dimensions.get('window').width;
@@ -74,56 +73,11 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
   //     });
   // };
 
-  const handleLiking = async () => {
-    setIsLiking(true);
-    console.log('liking....');
-    await db.transaction(async tx => {
-      try {
-        await tx.executeSql(
-          `INSERT INTO userLikes(post_id) VALUES(${post.id})`,
-        );
-        setIsLiking(false);
-        getOfflineLikes();
-      } catch (error) {
-        console.log(error);
-        setIsLiking(false);
-      }
-    });
+  const handleLiking = async () => {};
 
-    console.log('finished linking....');
-  };
+  const getOfflineLikes = () => {};
 
-  const getOfflineLikes = () => {
-    db.transaction(tx => {
-      tx.executeSql(
-        'SELECT * FROM userLikes WHERE post_id=?',
-        [post.id],
-        (tx, res) => {
-          let len = res.rows.length;
-          setOfflineLikes(len);
-          // console.log(JSON.stringify(res.rows.item(0)));
-          // console.log('Offline likes ' + len + ' post id ' + post.id);
-        },
-      );
-    });
-  };
-
-  const handleDisliking = () => {
-    setIsDisliking(true);
-    Axios.post(backendUrl + '/handlePostDislike', {
-      postId: post.id,
-      username: username,
-      userId: id,
-    })
-      .then(res => {
-        // console.log(res.data);
-        setIsDisliking(false);
-      })
-      .catch(error => {
-        console.log(error);
-        setIsDisliking(true);
-      });
-  };
+  const handleDisliking = () => {};
 
   const requestPostDelete = () => {
     Alert.alert(
