@@ -12,18 +12,15 @@ import {
 } from 'react-native';
 import WimitiColors from '../../WimitiColors';
 import Setup from './Setup';
-import Posts from './Posts';
 import UserPosts from './UserPosts/UserPosts';
 import Header from './Header/Header';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 import DraggablePanel from 'react-native-draggable-panel';
 import ViewComments from './UserPosts/ViewComments/ViewComments';
 import {backendUserImagesUrl} from '../../Config';
-import {messagesTable} from '../../helpers/tableCreations';
 import {useSelector} from 'react-redux';
 
 const height = Dimensions.get('window').height;
-const width = Dimensions.get('window').width;
 const Home = ({navigation}) => {
   const {image} = useSelector(state => state.currentUser);
   const [refreshing, setRefreshing] = useState(false);
@@ -31,10 +28,6 @@ const Home = ({navigation}) => {
   const [commentsPostId, setCommentsPostId] = useState(null);
 
   const commentsPanelRef = useRef();
-
-  useEffect(() => {
-    messagesTable();
-  }, []);
 
   const showCommentsPanel = () => {
     commentsPanelRef.current.show();
@@ -57,8 +50,8 @@ const Home = ({navigation}) => {
       <View
         style={{
           backgroundColor: WimitiColors.white,
-          flex: 1,
           paddingBottom: 50,
+          flex: 1,
         }}>
         <SafeAreaView>
           <Header navigation={navigation} />
@@ -66,7 +59,7 @@ const Home = ({navigation}) => {
             refreshControl={
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
-            <Setup />
+            <Setup navigation={navigation} />
             <View style={{margin: 10, marginTop: 15}}>
               <TouchableWithoutFeedback
                 onPress={() => navigation.navigate('CreatePost')}>

@@ -9,6 +9,7 @@ import shorts from './shorts';
 import posts from './posts';
 import postLikes from './postLikes';
 import postDislikes from './postDislikes';
+import setupPanel from './setupPanel';
 
 const rootReducer = combineReducers({
   currentUser,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   posts,
   postLikes,
   postDislikes,
+  setupPanel,
 });
 
 export default rootReducer;
