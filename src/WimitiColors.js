@@ -10,7 +10,7 @@ module.exports = {
   dark: '#333',
   darkBtn: '#2A2828',
   green: '#027339',
-  red: '#730B02',
+  red: '#ec4435',
   fbLightGray: '#E9EBEE',
   fbLightGrayDark: 'rgb(225, 227, 230)',
   fbLightBlue: '#00D6FF',

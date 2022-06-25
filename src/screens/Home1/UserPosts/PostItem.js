@@ -27,30 +27,26 @@ import Axios from 'axios';
 import Video from './Video/Video';
 import TimeAgo from 'react-native-timeago';
 import {Menu, MenuItem, MenuDivider} from 'react-native-material-menu';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
+import {handleLike, removePostLike} from '../../../actions/postLikes';
+import {handleDislike, removePostDislike} from '../../../actions/postDislikes';
 
 const width = Dimensions.get('window').width;
 const height = Dimensions.get('window').height;
 
 function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
+  const dispatch = useDispatch();
   const {image, fname, lname, username, id} = useSelector(
     state => state.currentUser,
   );
+  const {likes} = useSelector(state => state.postLikes);
+  const {dislikes} = useSelector(state => state.postDislikes);
   const postContent = JSON.parse(post.content);
   const [isDisliking, setIsDisliking] = useState(false);
   const [isLiking, setIsLiking] = useState(false);
-  const [userLikedPost, setUserLikedPost] = useState(false);
   const [visible, setVisible] = useState(false);
   const [isEnabled, setIsEnabled] = useState(false);
   const [isDeletingPost, setIsDeletingPost] = useState(false);
-  const [offlineLikes, setOfflineLikes] = useState(0);
-  useEffect(() => {
-    let sub = true;
-    if (sub) {
-      getOfflineLikes();
-    }
-    return () => (sub = false);
-  }, []);
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
   const hideMenu = () => setVisible(false);
@@ -73,11 +69,43 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
   //     });
   // };
 
-  const handleLiking = async () => {};
+  const stateLikes = () => {
+    const lk = likes.filter(item => item.postId == post.id);
+    return lk.length;
+  };
 
-  const getOfflineLikes = () => {};
+  const stateDislikes = () => {
+    const lk = dislikes.filter(item => item.postId == post.id);
+    return lk.length;
+  };
 
-  const handleDisliking = () => {};
+  const checkIfCurrentUserLikedThisPost = () => {
+    const lk = likes.filter(
+      item =>
+        (item.status === 'saved' || item.status === 'pending') &&
+        item.postId == post.id &&
+        item.username == username,
+    );
+    if (lk.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
+
+  const checkIfCurrentUserDisLikedThisPost = () => {
+    const lk = dislikes.filter(
+      item =>
+        (item.status === 'saved' || item.status === 'pending') &&
+        item.postId == post.id &&
+        item.username == username,
+    );
+    if (lk.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  };
 
   const requestPostDelete = () => {
     Alert.alert(
@@ -265,7 +293,12 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
           padding: 10,
         }}>
         <View style={{alignItems: 'center', flexDirection: 'row'}}>
-          {isLiking ? (
+          <TouchableWithoutFeedback
+            onPress={() => {
+              checkIfCurrentUserLikedThisPost()
+                ? dispatch(removePostLike(post.id))
+                : dispatch(handleLike(post.id));
+            }}>
             <View
               style={{
                 alignItems: 'center',
@@ -273,45 +306,32 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
                 flexDirection: 'row',
                 marginRight: 15,
               }}>
-              <Icon0
-                name="ios-heart-outline"
-                size={30}
-                color={WimitiColors.black}
-              />
-              <ActivityIndicator
-                size={20}
-                color={WimitiColors.black}
-                style={{
-                  paddingLeft: 5,
-                }}
-              />
-            </View>
-          ) : (
-            <TouchableWithoutFeedback onPress={() => handleLiking()}>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  marginRight: 15,
-                }}>
+              {checkIfCurrentUserLikedThisPost() ? (
+                <Icon0 name="ios-heart" size={30} color={WimitiColors.red} />
+              ) : (
                 <Icon0
                   name="ios-heart-outline"
                   size={30}
                   color={WimitiColors.black}
                 />
-                <Text
-                  style={{
-                    color: WimitiColors.black,
-                    fontSize: 20,
-                    paddingLeft: 5,
-                  }}>
-                  {parseInt(post.likes, 10) + parseInt(offlineLikes, 10)}
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-          )}
-          {isDisliking ? (
+              )}
+              <Text
+                style={{
+                  color: WimitiColors.black,
+                  fontSize: 20,
+                  paddingLeft: 5,
+                }}>
+                {parseInt(post.likes, 10) + stateLikes()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+
+          <TouchableWithoutFeedback
+            onPress={() =>
+              checkIfCurrentUserDisLikedThisPost()
+                ? dispatch(removePostDislike(post.id))
+                : dispatch(handleDislike(post.id))
+            }>
             <View
               style={{
                 alignItems: 'center',
@@ -319,44 +339,30 @@ function PostItem({post, navigation, showCommentsPanel, setCommentsPostId}) {
                 flexDirection: 'row',
                 marginRight: 15,
               }}>
-              <Icon0
-                name="ios-heart-dislike-outline"
-                size={30}
-                color={WimitiColors.black}
-              />
-              <ActivityIndicator
-                size={30}
-                color={WimitiColors.black}
-                style={{
-                  paddingLeft: 5,
-                }}
-              />
-            </View>
-          ) : (
-            <TouchableWithoutFeedback onPress={() => handleDisliking()}>
-              <View
-                style={{
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'row',
-                  marginRight: 15,
-                }}>
+              {checkIfCurrentUserDisLikedThisPost() ? (
+                <Icon0
+                  name="ios-heart-dislike"
+                  size={30}
+                  color={WimitiColors.red}
+                />
+              ) : (
                 <Icon0
                   name="ios-heart-dislike-outline"
                   size={30}
                   color={WimitiColors.black}
                 />
-                <Text
-                  style={{
-                    color: WimitiColors.black,
-                    fontSize: 20,
-                    paddingLeft: 5,
-                  }}>
-                  {post.dislikes}
-                </Text>
-              </View>
-            </TouchableWithoutFeedback>
-          )}
+              )}
+              <Text
+                style={{
+                  color: WimitiColors.black,
+                  fontSize: 20,
+                  paddingLeft: 5,
+                }}>
+                {parseInt(post.dislikes, 10) + stateDislikes()}
+              </Text>
+            </View>
+          </TouchableWithoutFeedback>
+
           <TouchableWithoutFeedback
             onPress={() => {
               setCommentsPostId(post.id);

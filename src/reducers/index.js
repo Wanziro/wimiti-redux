@@ -7,6 +7,8 @@ import onlineUsers from './onlineUsers';
 import socketReducer from './socket';
 import shorts from './shorts';
 import posts from './posts';
+import postLikes from './postLikes';
+import postDislikes from './postDislikes';
 
 const rootReducer = combineReducers({
   currentUser,
@@ -17,6 +19,8 @@ const rootReducer = combineReducers({
   socketReducer,
   shorts,
   posts,
+  postLikes,
+  postDislikes,
 });
 
 export default rootReducer;

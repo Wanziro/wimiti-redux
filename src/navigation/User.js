@@ -128,10 +128,11 @@ const User = () => {
   let connectToSocketInterval;
 
   const handleSocketConnection = () => {
-    if (socket?.connected) {
-    } else {
-      console.log('Not connected to the socket');
-      dispatch(setSocket(io(socketIoServerUrl)));
+    if(socket){
+      if (!socket.connected) {
+        console.log('Not connected to the socket');
+        dispatch(setSocket(io(socketIoServerUrl)));
+      }
     }
   };
 
