@@ -22,33 +22,21 @@ function ChattRoomHeader({user, navigation}) {
       }}>
       <Pressable onPress={() => navigation.goBack()}>
         <View>
-          {Platform.OS === 'ios' ? (
-            <Icon
-              name="ios-chevron-back"
-              size={30}
-              color={WimitiColors.black}
-            />
-          ) : (
-            <Icon
-              name="arrow-back-outline"
-              size={30}
-              color={WimitiColors.black}
-            />
-          )}
+          <Icon name="ios-chevron-back" size={30} color={WimitiColors.black} />
         </View>
       </Pressable>
-      <View>
+      <View style={{marginLeft: 5}}>
         {user.image != null && user.image.trim() == '' ? (
           <View
             style={{
-              width: 40,
-              height: 40,
+              width: 30,
+              height: 30,
               borderRadius: 100,
               backgroundColor: WimitiColors.black,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Icon3 name="user" size={30} color={WimitiColors.white} />
+            <Icon3 name="user" size={20} color={WimitiColors.white} />
           </View>
         ) : (
           <Image
@@ -57,9 +45,15 @@ function ChattRoomHeader({user, navigation}) {
           />
         )}
       </View>
-      <View style={{width: width - (25 + 30 + 120 + 40)}}>
+      <View style={{flex: 1, marginLeft: 5}}>
         <Text
-          style={{color: WimitiColors.black, marginLeft: 5, fontSize: 18}}
+          style={{
+            color: WimitiColors.black,
+            marginLeft: 5,
+            fontSize: 18,
+            fontFamily: 'sf_pro',
+            fontWeight: '700',
+          }}
           numberOfLines={1}>
           {user.username}
         </Text>
@@ -72,13 +66,17 @@ function ChattRoomHeader({user, navigation}) {
           width: 120,
         }}>
         <View>
-          <Icon name="videocam" size={30} color={WimitiColors.black} />
+          <Icon name="videocam" size={30} color={WimitiColors.famousBlue} />
         </View>
         <View>
-          <Icon name="ios-call" size={25} color={WimitiColors.black} />
+          <Icon name="ios-call" size={25} color={WimitiColors.famousBlue} />
         </View>
         <View>
-          <Icon5 name="dots-vertical" size={30} color={WimitiColors.black} />
+          <Icon5
+            name="dots-vertical"
+            size={30}
+            color={WimitiColors.famousBlue}
+          />
         </View>
       </View>
     </View>

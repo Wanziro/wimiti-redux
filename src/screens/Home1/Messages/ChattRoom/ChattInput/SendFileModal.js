@@ -4,7 +4,7 @@ import Icon from 'react-native-vector-icons/AntDesign';
 import WimitiColors from '../../../../../WimitiColors';
 import SendFileInput from './SendFileInput';
 import VideoPreview from './VideoPreview';
-
+import AutoHeightImage from 'react-native-auto-height-image';
 const width = Dimensions.get('window').width;
 
 function SendFileModal({
@@ -39,10 +39,7 @@ function SendFileModal({
       </View>
       {selectedFile.type.split('/')[0] == 'image' && (
         <View>
-          <Image
-            source={{uri: selectedFile.uri}}
-            style={{width: '100%', height: undefined, aspectRatio: 1}}
-          />
+          <AutoHeightImage source={{uri: selectedFile.uri}} width={width} />
         </View>
       )}
 

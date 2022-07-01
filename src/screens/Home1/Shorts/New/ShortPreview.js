@@ -20,7 +20,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import Axios from 'axios';
 import {backendUrl} from '../../../../Config';
 import {fetchShorts, setCurrentViewingIndex} from '../../../../actions/shorts';
-
+import RNFS from 'react-native-fs';
+import {RNFFmpeg} from 'react-native-ffmpeg';
 const {width, height} = Dimensions.get('window');
 
 function ShortPreview({route, navigation}) {
@@ -37,54 +38,112 @@ function ShortPreview({route, navigation}) {
 
   const videoRef = useRef(null);
 
-  const handleUploadVideo = () => {
-    setShowModal(true);
-    setIsavingShort(false);
-    uploadShort(videoFile, username)
-      .then(response => {
-        console.log(response);
-        setIsavingShort(true);
-        const {fileName} = response;
-        const date = new Date();
+  function processVideo(videoUrl, callback) {
+    const finalVideo = `${RNFS.CachesDirectoryPath}/audioVideoFinal.mp4`;
 
-        Axios.post(backendUrl + '/saveShort', {
-          video: fileName,
-          width: videoFile.width,
-          height: videoFile.height,
-          username,
-          userId: id,
-          caption,
-          date: date,
-        })
-          .then(res => {
-            console.log(res.data);
-            if (res.data.type == 'success') {
-              dispatch(fetchShorts());
-              dispatch(setCurrentViewingIndex(0));
-              navigation.navigate('Shorts');
-            } else {
-              setShowModal(false);
-              alert(res.data.msg);
-            }
-          })
-          .catch(err => {
-            console.log(err);
-            setShowModal(false);
-            try {
-              alert(err.msg);
-            } catch (e) {
-              alert(err.message);
-            }
+    cacheResourcePath(videoUrl).then(rVideoUrl => {
+      const str_cmd = `-y -i ${rVideoUrl} -c:v -i ${videoFile.uri} -c:v mp4  ${finalVideo}`;
+
+      RNFFmpeg.execute(str_cmd).then(result => {
+        if (result === 0) {
+          RNFS.unlink(rVideoUrl);
+
+          callback({
+            videoPath:
+              Platform.OS === 'android' ? 'file://' + finalVideo : finalVideo,
           });
-      })
-      .catch(error => {
-        setShowModal(false);
-        try {
-          alert(error.msg);
-        } catch (err) {
-          alert(error.message);
         }
       });
+    });
+  }
+
+  async function cacheResourcePath(sourcePath) {
+    const uriComponents = sourcePath.split('/');
+    console.log('uri components');
+    console.log(uriComponents);
+    const fileNameAndExtension = uriComponents[uriComponents.length - 1];
+
+    const destPath = `${RNFS.CachesDirectoryPath}/${fileNameAndExtension}`;
+
+    await RNFS.copyFile(sourcePath, destPath);
+    console.log('destination path:');
+    console.log(destPath);
+    return destPath;
+  }
+
+  const handleUploadVideo = async () => {
+    setShowModal(true);
+    setIsavingShort(false);
+    // RNFFmpeg.execute(`-i ${videoFile.uri} -c:v mpeg4 resultimage.\mp4`).then(
+    //   res => {
+    //     console.log('compression results');
+    //     console.log(JSON.parse(res));
+    //   },
+    // );
+
+    processVideo(videoFile.uri, data => {
+      console.log('data here!');
+      console.log(data);
+    });
+
+    // const newUri = await RNVideoHelper.compress(sourceUri, {
+    //   startTime: 10, // optional, in seconds, defaults to 0
+    //   endTime: 100, //  optional, in seconds, defaults to video duration
+    //   quality: 'low', // default low, can be medium or high
+    //   defaultOrientation: 0, // By default is 0, some devices not save this property in metadata. Can be between 0 - 360
+    // })
+    //   .progress(value => {
+    //     console.warn('progress', value); // Int with progress value from 0 to 1
+    //   })
+    //   .then(compressedUri => {
+    //     console.warn('compressedUri', compressedUri); // String with path to temporary compressed video
+    //   });
+
+    // uploadShort(videoFile, username)
+    //   .then(response => {
+    //     console.log(response);
+    //     setIsavingShort(true);
+    //     const {fileName} = response;
+    //     const date = new Date();
+
+    //     Axios.post(backendUrl + '/saveShort', {
+    //       video: fileName,
+    //       width: videoFile.width,
+    //       height: videoFile.height,
+    //       username,
+    //       userId: id,
+    //       caption,
+    //       date: date,
+    //     })
+    //       .then(res => {
+    //         console.log(res.data);
+    //         if (res.data.type == 'success') {
+    //           dispatch(fetchShorts());
+    //           dispatch(setCurrentViewingIndex(0));
+    //           navigation.navigate('Shorts');
+    //         } else {
+    //           setShowModal(false);
+    //           alert(res.data.msg);
+    //         }
+    //       })
+    //       .catch(err => {
+    //         console.log(err);
+    //         setShowModal(false);
+    //         try {
+    //           alert(err.msg);
+    //         } catch (e) {
+    //           alert(err.message);
+    //         }
+    //       });
+    //   })
+    //   .catch(error => {
+    //     setShowModal(false);
+    //     try {
+    //       alert(error.msg);
+    //     } catch (err) {
+    //       alert(error.message);
+    //     }
+    //   });
   };
 
   useEffect(() => {

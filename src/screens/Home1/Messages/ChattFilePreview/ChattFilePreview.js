@@ -2,7 +2,7 @@ import React from 'react';
 import {View, Text, StatusBar, Image, Dimensions} from 'react-native';
 import {backendChattFilesUrl} from '../../../../Config';
 import WimitiColors from '../../../../WimitiColors';
-
+import AutoHeightImage from 'react-native-auto-height-image';
 const {width} = Dimensions.get('window');
 
 function ChattFilePreview({route, navigation}) {
@@ -33,9 +33,9 @@ function ChattFilePreview({route, navigation}) {
             <>
               {file.type.split('/')[0] == 'image' && (
                 <View>
-                  <Image
+                  <AutoHeightImage
                     source={{uri: backendChattFilesUrl + file.uri}}
-                    style={{width, height: undefined, aspectRatio: 1}}
+                    width={width}
                   />
                 </View>
               )}

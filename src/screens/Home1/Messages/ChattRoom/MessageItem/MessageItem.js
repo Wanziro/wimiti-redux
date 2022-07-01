@@ -3,10 +3,16 @@ import {View, Image, Text, Dimensions, Pressable} from 'react-native';
 import WimitiColors from '../../../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
 import Icon2 from 'react-native-vector-icons/dist/Octicons';
+import Icon3 from 'react-native-vector-icons/dist/AntDesign';
 import TimeAgo from 'react-native-timeago';
-import {backendChattFilesUrl} from '../../../../../Config';
+import {
+  backendChattFilesUrl,
+  backendUserImagesUrl,
+} from '../../../../../Config';
 import VideoThumbnail from './VideoThumbnail';
 import {SwipeRow} from 'react-native-swipe-list-view';
+import WimitiFonts from '../../../../../WimitiFonts';
+import {useSelector} from 'react-redux';
 
 const {width} = Dimensions.get('window');
 
@@ -17,6 +23,7 @@ function MessageItem({
   currentUsername,
   setReplyMessage,
 }) {
+  const userObj = useSelector(state => state.currentUser);
   let file = '';
   let repliedMessage = '';
   let repliedFile = '';
@@ -24,7 +31,11 @@ function MessageItem({
     if (item.sent == false && item.delivered == false && item.seen == false) {
       return (
         <View style={{marginLeft: 5}}>
-          <Icon name="ios-time-outline" size={15} color={WimitiColors.black} />
+          <Icon
+            name="ios-time-outline"
+            size={25}
+            color={WimitiColors.textGray}
+          />
         </View>
       );
     } else if (
@@ -34,7 +45,11 @@ function MessageItem({
     ) {
       return (
         <View style={{marginLeft: 5}}>
-          <Icon name="checkmark-sharp" size={15} color={WimitiColors.black} />
+          <Icon
+            name="checkmark-sharp"
+            size={25}
+            color={WimitiColors.textGray}
+          />
         </View>
       );
     } else if (
@@ -44,13 +59,17 @@ function MessageItem({
     ) {
       return (
         <View style={{marginLeft: 5}}>
-          <Icon name="checkmark-done" size={15} color={WimitiColors.black} />
+          <Icon name="checkmark-done" size={25} color={WimitiColors.textGray} />
         </View>
       );
     } else {
       return (
         <View style={{marginLeft: 5}}>
-          <Icon name="checkmark-done" size={15} color={WimitiColors.blue} />
+          <Icon
+            name="checkmark-done"
+            size={25}
+            color={WimitiColors.famousBlue}
+          />
         </View>
       );
     }
@@ -83,8 +102,12 @@ function MessageItem({
       }
     } catch (error) {
       file = item.repliedMessage;
-      if (repliedMessage.file != '') {
-        repliedFile = JSON.parse(repliedMessage.file);
+      try {
+        if (repliedMessage.file != '') {
+          repliedFile = JSON.parse(repliedMessage.file);
+        }
+      } catch (error) {
+        console.log(error);
       }
     }
   }
@@ -106,144 +129,195 @@ function MessageItem({
                 style={{justifyContent: 'flex-end', alignItems: 'flex-end'}}>
                 <View
                   style={{
-                    backgroundColor: WimitiColors.fbLightGray,
-                    padding: 10,
-                    borderRadius: 15,
+                    alignItems: 'flex-start',
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
                   }}>
-                  {repliedMessage != '' && (
+                  <View style={{maxWidth: width - (10 + 10 + 40 + 20)}}>
                     <View
                       style={{
-                        borderLeftWidth: 3,
-                        borderLeftColor: WimitiColors.blue,
-                        backgroundColor: WimitiColors.fbLightGrayDark,
-                        borderRadius: 10,
+                        backgroundColor: WimitiColors.cGrey,
                         padding: 10,
-                        marginBottom: 10,
+                        borderRadius: 15,
+                        borderBottomRightRadius: 0,
                       }}>
-                      <View
-                        style={{
-                          alignItems: 'flex-start',
-                          justifyContent: 'space-between',
-                          flexDirection: 'row',
-                        }}>
-                        <View>
-                          <Text
-                            numberOfLines={1}
-                            style={{color: WimitiColors.blue}}>
-                            {repliedMessage.sender === currentUsername
-                              ? 'You'
-                              : repliedMessage.receiver}
-                          </Text>
-                          <Text
-                            numberOfLines={1}
-                            style={{color: WimitiColors.gray}}>
-                            {repliedMessage.textMessage}
-                          </Text>
-                        </View>
-                        {repliedFile != '' && (
-                          <>
-                            {repliedFile.type.split('/')[0] === 'image' ? (
-                              <Image
-                                source={{
-                                  uri: backendChattFilesUrl + repliedFile.uri,
-                                }}
-                                style={{
-                                  width: 50,
-                                  height: 45,
-                                  borderRadius: 10,
-                                  marginLeft: 10,
-                                }}
-                              />
-                            ) : (
-                              <View style={{marginLeft: 10}}>
-                                <Icon2
-                                  name="video"
-                                  size={40}
-                                  color={WimitiColors.blue}
-                                />
-                              </View>
+                      {repliedMessage != '' && (
+                        <View
+                          style={{
+                            borderLeftWidth: 3,
+                            borderLeftColor: WimitiColors.famousBlue,
+                            backgroundColor: WimitiColors.white2,
+                            borderBottomRightRadius: 0,
+                            borderRadius: 10,
+                            padding: 10,
+                            marginBottom: 10,
+                          }}>
+                          <View
+                            style={{
+                              alignItems: 'flex-start',
+                              justifyContent: 'space-between',
+                              flexDirection: 'row',
+                            }}>
+                            <View>
+                              <Text
+                                numberOfLines={1}
+                                style={{color: WimitiColors.blue}}>
+                                {repliedMessage.sender === currentUsername
+                                  ? 'You'
+                                  : repliedMessage.receiver}
+                              </Text>
+                              <Text
+                                numberOfLines={1}
+                                style={{color: WimitiColors.gray}}>
+                                {repliedMessage.textMessage}
+                              </Text>
+                            </View>
+                            {repliedFile != '' && (
+                              <>
+                                {repliedFile?.type?.split('/')[0] ===
+                                'image' ? (
+                                  <Image
+                                    source={{
+                                      uri:
+                                        backendChattFilesUrl + repliedFile.uri,
+                                    }}
+                                    style={{
+                                      width: 50,
+                                      height: 45,
+                                      borderRadius: 10,
+                                      marginLeft: 10,
+                                    }}
+                                  />
+                                ) : (
+                                  <View style={{marginLeft: 10}}>
+                                    <Icon2
+                                      name="video"
+                                      size={40}
+                                      color={WimitiColors.blue}
+                                    />
+                                  </View>
+                                )}
+                              </>
                             )}
-                          </>
-                        )}
-                      </View>
-                    </View>
-                  )}
-                  {item.file !== '' && (
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate('ChattFilePreview', {message: item})
-                      }>
-                      {file !== '' && file.type.split('/')[0] == 'image' && (
-                        <View>
-                          {item.sent == 'true' ? (
-                            <Image
-                              source={{uri: backendChattFilesUrl + file.uri}}
-                              style={{
-                                width: width - 100,
-                                height: undefined,
-                                borderRadius: 10,
-                                aspectRatio: 1,
-                              }}
-                            />
-                          ) : (
-                            <Image
-                              source={{uri: file.uri}}
-                              style={{
-                                width: width - 100,
-                                height: undefined,
-                                aspectRatio: 1,
-                              }}
-                            />
-                          )}
+                          </View>
                         </View>
                       )}
-                      {file !== '' && file.type.split('/')[0] == 'video' && (
-                        <View>
-                          {item.sent == 'true' ? (
-                            <VideoThumbnail file={file} messageId={item.id} />
-                          ) : (
-                            <Image
-                              source={{uri: file.uri}}
-                              style={{
-                                width: width - 100,
-                                height: undefined,
-                                aspectRatio: 1,
-                              }}
-                            />
+                      {item.file !== '' && (
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate('ChattFilePreview', {
+                              message: item,
+                            })
+                          }>
+                          {file !== '' && file?.type?.split('/')[0] == 'image' && (
+                            <View>
+                              {item.sent == 'true' ? (
+                                <Image
+                                  source={{
+                                    uri: backendChattFilesUrl + file.uri,
+                                  }}
+                                  style={{
+                                    width: width - 100,
+                                    height: undefined,
+                                    borderRadius: 10,
+                                    aspectRatio: 1,
+                                  }}
+                                />
+                              ) : (
+                                <Image
+                                  source={{uri: file.uri}}
+                                  style={{
+                                    width: width - 100,
+                                    height: undefined,
+                                    aspectRatio: 1,
+                                  }}
+                                />
+                              )}
+                            </View>
                           )}
-                        </View>
+                          {file !== '' && file?.type?.split('/')[0] == 'video' && (
+                            <View>
+                              {item.sent == 'true' ? (
+                                <VideoThumbnail
+                                  file={file}
+                                  messageId={item.id}
+                                />
+                              ) : (
+                                <Image
+                                  source={{uri: file.uri}}
+                                  style={{
+                                    width: width - 100,
+                                    height: undefined,
+                                    aspectRatio: 1,
+                                  }}
+                                />
+                              )}
+                            </View>
+                          )}
+                        </Pressable>
                       )}
-                    </Pressable>
-                  )}
-                  {(file !== '' && file.type.split('/')[0] == 'image') ||
-                  (file !== '' && file.type.split('/')[0] == 'video') ? (
-                    <>
-                      {item.textMessage != '' && (
+                      {(file !== '' && file?.type?.split('/')[0] == 'image') ||
+                      (file !== '' && file?.type?.split('/')[0] == 'video') ? (
+                        <>
+                          {item.textMessage != '' && (
+                            <Text
+                              style={{
+                                color: WimitiColors.black,
+                                width: width - 100,
+                                marginTop: 5,
+                              }}>
+                              {item.textMessage}
+                            </Text>
+                          )}
+                        </>
+                      ) : (
                         <Text
                           style={{
                             color: WimitiColors.black,
-                            width: width - 100,
-                            marginTop: 5,
+                            fontFamily: WimitiFonts.sfPro,
+                            fontStyle: 'normal',
+                            fontWeight: '500',
+                            fontSize: 14,
                           }}>
                           {item.textMessage}
                         </Text>
                       )}
-                    </>
-                  ) : (
-                    <Text style={{color: WimitiColors.black}}>
-                      {item.textMessage}
-                    </Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    marginTop: 5,
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                  }}>
-                  <TimeAgo time={item.date} />
-                  {handleDeliveryIcons()}
+                    </View>
+                    <View
+                      style={{
+                        marginTop: 5,
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                      }}>
+                      {handleDeliveryIcons()}
+                      <TimeAgo time={item.date} />
+                    </View>
+                  </View>
+                  <View style={{marginLeft: 10}}>
+                    {userObj?.image?.trim() !== '' &&
+                    userObj?.image !== null ? (
+                      <Image
+                        source={{uri: backendUserImagesUrl + userObj.image}}
+                        style={{width: 40, height: 40, borderRadius: 100}}
+                      />
+                    ) : (
+                      <View
+                        style={{
+                          width: 40,
+                          height: 40,
+                          borderRadius: 100,
+                          backgroundColor: WimitiColors.black,
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}>
+                        <Icon3
+                          name="user"
+                          size={25}
+                          color={WimitiColors.white}
+                        />
+                      </View>
+                    )}
+                  </View>
                 </View>
               </View>
             </SwipeRow>
@@ -262,146 +336,186 @@ function MessageItem({
                 }}>
                 <View
                   style={{
-                    // backgroundColor: WimitiColors.white,
-                    backgroundColor: '#f2f2f2',
-                    borderColor: '#f2f2f2',
-                    borderWidth: 1,
-                    padding: 10,
-                    borderRadius: 15,
+                    flexDirection: 'row',
+                    alignItems: 'flex-start',
+                    justifyContent: 'space-between',
                   }}>
-                  {repliedMessage != '' && (
-                    <View
-                      style={{
-                        borderLeftWidth: 3,
-                        borderLeftColor: WimitiColors.blue,
-                        backgroundColor: WimitiColors.fbLightGrayDark,
-                        borderRadius: 10,
-                        padding: 10,
-                        marginBottom: 10,
-                      }}>
+                  <View style={{marginRight: 10}}>
+                    {user?.image?.trim() !== '' && user?.image !== null ? (
+                      <Image
+                        source={{uri: backendUserImagesUrl + user.image}}
+                        style={{width: 40, height: 40, borderRadius: 100}}
+                      />
+                    ) : (
                       <View
                         style={{
-                          alignItems: 'flex-start',
-                          justifyContent: 'space-between',
-                          flexDirection: 'row',
+                          width: 40,
+                          height: 40,
+                          borderRadius: 100,
+                          backgroundColor: WimitiColors.black,
+                          alignItems: 'center',
+                          justifyContent: 'center',
                         }}>
-                        <View>
-                          <Text
-                            numberOfLines={1}
-                            style={{color: WimitiColors.blue}}>
-                            {repliedMessage.sender === currentUsername
-                              ? 'You'
-                              : repliedMessage.receiver}
-                          </Text>
-                          <Text
-                            numberOfLines={1}
-                            style={{color: WimitiColors.gray}}>
-                            {repliedMessage.textMessage}
-                          </Text>
-                        </View>
-                        {repliedFile != '' && (
-                          <>
-                            {repliedFile.type.split('/')[0] === 'image' ? (
-                              <Image
-                                source={{
-                                  uri: backendChattFilesUrl + repliedFile.uri,
-                                }}
-                                style={{
-                                  width: 50,
-                                  height: 45,
-                                  borderRadius: 10,
-                                  marginLeft: 10,
-                                }}
-                              />
-                            ) : (
-                              <View style={{marginLeft: 10}}>
-                                <Icon2
-                                  name="video"
-                                  size={40}
-                                  color={WimitiColors.blue}
-                                />
-                              </View>
-                            )}
-                          </>
-                        )}
+                        <Icon3
+                          name="user"
+                          size={25}
+                          color={WimitiColors.white}
+                        />
                       </View>
-                    </View>
-                  )}
-                  {item.file !== '' && (
-                    <Pressable
-                      onPress={() =>
-                        navigation.navigate('ChattFilePreview', {message: item})
-                      }>
-                      {file !== '' && file.type.split('/')[0] == 'image' && (
-                        <View>
-                          {item.sent == 'true' ? (
-                            <Image
-                              source={{uri: backendChattFilesUrl + file.uri}}
-                              style={{
-                                width: width - 100,
-                                height: undefined,
-                                borderRadius: 10,
-                                aspectRatio: 1,
-                              }}
-                            />
-                          ) : (
-                            <Image
-                              source={{uri: file.uri}}
-                              style={{
-                                width: width - 100,
-                                height: undefined,
-                                aspectRatio: 1,
-                              }}
-                            />
-                          )}
-                        </View>
-                      )}
-                      {file !== '' && file.type.split('/')[0] == 'video' && (
-                        <View>
-                          {item.sent == 'true' ? (
-                            <VideoThumbnail file={file} messageId={item.id} />
-                          ) : (
-                            <Image
-                              source={{uri: file.uri}}
-                              style={{
-                                width: width - 100,
-                                height: undefined,
-                                aspectRatio: 1,
-                              }}
-                            />
-                          )}
-                        </View>
-                      )}
-                    </Pressable>
-                  )}
-                  {(file !== '' && file.type.split('/')[0] == 'image') ||
-                  (file !== '' && file.type.split('/')[0] == 'video') ? (
-                    <>
-                      {item.textMessage != '' && (
-                        <Text
+                    )}
+                  </View>
+                  <View style={{maxWidth: width - (10 + 10 + 40 + 10)}}>
+                    <View
+                      style={{
+                        // backgroundColor: WimitiColors.white,
+                        backgroundColor: WimitiColors.white,
+                        borderColor: WimitiColors.cGrey,
+                        borderWidth: 1,
+                        padding: 10,
+                        borderRadius: 15,
+                        borderTopLeftRadius: 0,
+                      }}>
+                      {repliedMessage != '' && (
+                        <View
                           style={{
-                            color: WimitiColors.black,
-                            width: width - 100,
-                            marginTop: 5,
+                            borderLeftWidth: 3,
+                            borderLeftColor: WimitiColors.blue,
+                            backgroundColor: WimitiColors.fbLightGrayDark,
+                            borderRadius: 10,
+                            padding: 10,
+                            marginBottom: 10,
                           }}>
+                          <View
+                            style={{
+                              alignItems: 'flex-start',
+                              justifyContent: 'space-between',
+                              flexDirection: 'row',
+                            }}>
+                            <View>
+                              <Text
+                                numberOfLines={1}
+                                style={{color: WimitiColors.blue}}>
+                                {repliedMessage.sender === currentUsername
+                                  ? 'You'
+                                  : repliedMessage.receiver}
+                              </Text>
+                              <Text
+                                numberOfLines={1}
+                                style={{color: WimitiColors.gray}}>
+                                {repliedMessage.textMessage}
+                              </Text>
+                            </View>
+                            {repliedFile != '' && (
+                              <>
+                                {repliedfile?.type?.split('/')[0] ===
+                                'image' ? (
+                                  <Image
+                                    source={{
+                                      uri:
+                                        backendChattFilesUrl + repliedFile.uri,
+                                    }}
+                                    style={{
+                                      width: 50,
+                                      height: 45,
+                                      borderRadius: 10,
+                                      marginLeft: 10,
+                                    }}
+                                  />
+                                ) : (
+                                  <View style={{marginLeft: 10}}>
+                                    <Icon2
+                                      name="video"
+                                      size={40}
+                                      color={WimitiColors.blue}
+                                    />
+                                  </View>
+                                )}
+                              </>
+                            )}
+                          </View>
+                        </View>
+                      )}
+                      {item.file !== '' && (
+                        <Pressable
+                          onPress={() =>
+                            navigation.navigate('ChattFilePreview', {
+                              message: item,
+                            })
+                          }>
+                          {file !== '' && file?.type?.split('/')[0] == 'image' && (
+                            <View>
+                              {item.sent == 'true' ? (
+                                <Image
+                                  source={{
+                                    uri: backendChattFilesUrl + file.uri,
+                                  }}
+                                  style={{
+                                    width: width - 100,
+                                    height: undefined,
+                                    borderRadius: 10,
+                                    aspectRatio: 1,
+                                  }}
+                                />
+                              ) : (
+                                <Image
+                                  source={{uri: file.uri}}
+                                  style={{
+                                    width: width - 100,
+                                    height: undefined,
+                                    aspectRatio: 1,
+                                  }}
+                                />
+                              )}
+                            </View>
+                          )}
+                          {file !== '' && file?.type?.split('/')[0] == 'video' && (
+                            <View>
+                              {item.sent == 'true' ? (
+                                <VideoThumbnail
+                                  file={file}
+                                  messageId={item.id}
+                                />
+                              ) : (
+                                <Image
+                                  source={{uri: file.uri}}
+                                  style={{
+                                    width: width - 100,
+                                    height: undefined,
+                                    aspectRatio: 1,
+                                  }}
+                                />
+                              )}
+                            </View>
+                          )}
+                        </Pressable>
+                      )}
+                      {(file !== '' && file?.type?.split('/')[0] == 'image') ||
+                      (file !== '' && file?.type?.split('/')[0] == 'video') ? (
+                        <>
+                          {item.textMessage != '' && (
+                            <Text
+                              style={{
+                                color: WimitiColors.black,
+                                width: width - 100,
+                                marginTop: 5,
+                              }}>
+                              {item.textMessage}
+                            </Text>
+                          )}
+                        </>
+                      ) : (
+                        <Text style={{color: WimitiColors.black}}>
                           {item.textMessage}
                         </Text>
                       )}
-                    </>
-                  ) : (
-                    <Text style={{color: WimitiColors.black}}>
-                      {item.textMessage}
-                    </Text>
-                  )}
-                </View>
-                <View
-                  style={{
-                    marginTop: 5,
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                    alignItems: 'flex-end',
-                  }}>
-                  <TimeAgo time={item.date} />
+                    </View>
+                    <View
+                      style={{
+                        marginTop: 5,
+                      }}>
+                      <TimeAgo time={item.date} />
+                    </View>
+                  </View>
                 </View>
               </View>
             </SwipeRow>

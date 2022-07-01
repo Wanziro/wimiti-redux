@@ -56,10 +56,10 @@ const ChattRoom = ({route, navigation}) => {
 
   return (
     <KeyboardAvoidingView
-      style={{flex: 1, backgroundColor: 'white'}}
+      style={{flex: 1, backgroundColor: WimitiColors.cWhiteSnow}}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 100}>
-      <View style={{backgroundColor: WimitiColors.white, flex: 1}}>
+      <View style={{backgroundColor: WimitiColors.cWhiteSnow, flex: 1}}>
         <FlatList
           inverted
           disableVirtualization={false}

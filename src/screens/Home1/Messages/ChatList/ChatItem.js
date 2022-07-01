@@ -6,6 +6,7 @@ import {backendUserImagesUrl} from '../../../../Config';
 import Icon from 'react-native-vector-icons/dist/AntDesign';
 import Icon2 from 'react-native-vector-icons/dist/MaterialIcons';
 import Icon3 from 'react-native-vector-icons/dist/Ionicons';
+import WimitiFonts from '../../../../WimitiFonts';
 
 const width = Dimensions.get('window').width;
 const ChatItem = ({room, username, navigation}) => {
@@ -55,6 +56,9 @@ const ChatItem = ({room, username, navigation}) => {
           justifyContent: 'space-between',
           flexDirection: 'row',
           marginVertical: 10,
+          borderBottomColor: WimitiColors.cGrey,
+          borderBottomWidth: 1,
+          paddingBottom: 10,
         }}>
         <View>
           {getImageToDisplay()?.trim() === '' || getImageToDisplay() == null ? (
@@ -77,7 +81,15 @@ const ChatItem = ({room, username, navigation}) => {
           )}
         </View>
         <View style={{paddingLeft: 10, flex: 1}}>
-          <Text style={{color: WimitiColors.black}}>
+          <Text
+            style={{
+              color: WimitiColors.black,
+              fontFamily: WimitiFonts.sfPro,
+              fontStyle: 'normal',
+              fontWeight: '700',
+              fontSize: 16,
+              // lineHeight: 17,
+            }}>
             {getUsernameToDisplay()}
           </Text>
           {file !== '' ? (
@@ -89,10 +101,10 @@ const ChatItem = ({room, username, navigation}) => {
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                   }}>
-                  {file.type.split('/')[0] == 'image' && (
+                  {file?.type?.split('/')[0] == 'image' && (
                     <Icon2 name="photo" size={25} color={WimitiColors.black} />
                   )}
-                  {file.type.split('/')[0] == 'video' && (
+                  {file?.type?.split('/')[0] == 'video' && (
                     <Icon3
                       name="videocam"
                       size={25}
@@ -101,7 +113,13 @@ const ChatItem = ({room, username, navigation}) => {
                   )}
                   <Text
                     numberOfLines={1}
-                    style={{color: WimitiColors.gray, paddingLeft: 5}}>
+                    style={{
+                      color: WimitiColors.gray,
+                      paddingLeft: 5,
+                      fontFamily: WimitiFonts.sfPro,
+                      fontSize: 14,
+                      fontWeight: '400',
+                    }}>
                     {room.textMessage}
                   </Text>
                 </View>
@@ -112,10 +130,10 @@ const ChatItem = ({room, username, navigation}) => {
                     alignItems: 'center',
                     justifyContent: 'flex-start',
                   }}>
-                  {file.type.split('/')[0] == 'image' && (
+                  {file?.type?.split('/')[0] == 'image' && (
                     <Icon2 name="photo" size={25} color={WimitiColors.black} />
                   )}
-                  {file.type.split('/')[0] == 'video' && (
+                  {file?.type?.split('/')[0] == 'video' && (
                     <Icon3
                       name="videocam"
                       size={25}
@@ -129,17 +147,26 @@ const ChatItem = ({room, username, navigation}) => {
                       textTransform: 'capitalize',
                       paddingLeft: 5,
                     }}>
-                    {file.type.split('/')[0]}
+                    {file?.type?.split('/')[0]}
                   </Text>
                 </View>
               )}
             </>
           ) : (
-            <Text numberOfLines={1}>{room.textMessage}</Text>
+            <Text
+              style={{
+                color: WimitiColors.gray,
+                fontSize: 14,
+                fontFamily: WimitiFonts.sfPro,
+                fontWeight: '400',
+              }}
+              numberOfLines={1}>
+              {room.textMessage}
+            </Text>
           )}
         </View>
         <View>
-          <Text style={{color: WimitiColors.black}}>
+          <Text style={{color: WimitiColors.black, fontStyle: 'italic'}}>
             {moment(room.date).format('DD/MM/YYYY')}
           </Text>
         </View>

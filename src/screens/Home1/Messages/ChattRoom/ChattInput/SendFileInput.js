@@ -79,7 +79,7 @@ function SendFileInput({
           onChangeText={t => setMessage(t)}
           style={{
             padding: 10,
-            borderColor: WimitiColors.black,
+            borderColor: WimitiColors.cGrey,
             borderWidth: 1,
             borderRadius: 100,
             flex: 1,
@@ -91,14 +91,14 @@ function SendFileInput({
               height: 50,
               width: 50,
               marginLeft: 10,
-              backgroundColor: WimitiColors.black,
+              backgroundColor: WimitiColors.cGrey,
               borderRadius: 50,
               alignItems: 'center',
               justifyContent: 'center',
             }}>
             <Icon
               name="send-sharp"
-              color={WimitiColors.white}
+              color={WimitiColors.famousBlue}
               size={30}
               style={{marginLeft: 10}}
             />
@@ -106,7 +106,7 @@ function SendFileInput({
         </Pressable>
       </View>
       <View style={{marginTop: 5}}>
-        <Text style={{textAlign: 'right', color: WimitiColors.black}}>
+        <Text style={{textAlign: 'right', color: WimitiColors.famousBlue}}>
           Send to {user.username}
         </Text>
       </View>

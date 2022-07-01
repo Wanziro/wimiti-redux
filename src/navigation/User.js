@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-import {StatusBar, TouchableWithoutFeedback, View, Text} from 'react-native';
+import {StatusBar, TouchableWithoutFeedback, View} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WimitiColors from '../WimitiColors';
@@ -105,17 +105,37 @@ const HomeTabs1 = ({navigation}) => {
       <Tab.Screen
         name="Message"
         component={Messages}
-        options={{
+        options={({route, navigation}) => ({
+          title: 'Messages',
+          headerRight: () => (
+            <View
+              style={{
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexDirection: 'row',
+              }}>
+              <View style={{marginRight: 15}}>
+                <Icon2 name="phone-call" size={25} color={WimitiColors.black} />
+              </View>
+              <TouchableWithoutFeedback
+                onPress={() => navigation.navigate('UsersList')}>
+                <View style={{marginHorizontal: 20}}>
+                  <Icon4 name="message" size={30} color={WimitiColors.black} />
+                </View>
+              </TouchableWithoutFeedback>
+            </View>
+          ),
+          headerShown: true,
           tabBarIcon: ({focused, color, size}) => {
             return <Icon3 name="message1" color={color} size={size} />;
           },
-        }}
-        listeners={{
-          tabPress: e => {
-            e.preventDefault();
-            navigation.navigate('ChatList');
-          },
-        }}
+        })}
+        // listeners={{
+        //   tabPress: e => {
+        //     e.preventDefault();
+        //     navigation.navigate('ChatList');
+        //   },
+        // }}
       />
     </Tab.Navigator>
   );
@@ -128,7 +148,7 @@ const User = () => {
   let connectToSocketInterval;
 
   const handleSocketConnection = () => {
-    if(socket){
+    if (socket) {
       if (!socket.connected) {
         console.log('Not connected to the socket');
         dispatch(setSocket(io(socketIoServerUrl)));
@@ -232,14 +252,14 @@ const User = () => {
                   <Icon2
                     name="phone-call"
                     size={25}
-                    color={WimitiColors.black}
+                    color={WimitiColors.textGray}
                   />
                 </View>
                 <View style={{paddingLeft: 10}}>
                   <Icon5
                     name="dots-vertical"
                     size={30}
-                    color={WimitiColors.black}
+                    color={WimitiColors.textGray}
                   />
                 </View>
               </View>
