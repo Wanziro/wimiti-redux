@@ -290,7 +290,10 @@ function MessageItem({
                         alignItems: 'center',
                       }}>
                       {handleDeliveryIcons()}
-                      <TimeAgo time={item.date} />
+                      <TimeAgo
+                        time={item.date}
+                        style={{color: WimitiColors.white}}
+                      />
                     </View>
                   </View>
                   <View style={{marginLeft: 10}}>
@@ -513,7 +516,10 @@ function MessageItem({
                       style={{
                         marginTop: 5,
                       }}>
-                      <TimeAgo time={item.date} />
+                      <TimeAgo
+                        time={item.date}
+                        style={{color: WimitiColors.white}}
+                      />
                     </View>
                   </View>
                 </View>

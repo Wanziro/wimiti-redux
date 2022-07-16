@@ -1,5 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {View, KeyboardAvoidingView, Platform, FlatList} from 'react-native';
+import {
+  View,
+  KeyboardAvoidingView,
+  Platform,
+  FlatList,
+  ImageBackground,
+  Dimensions,
+} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {
   fetchUserMessages,
@@ -11,6 +18,7 @@ import WimitiColors from '../../../../WimitiColors';
 import ChattInput from './ChattInput/ChattInput';
 import MessageItem from './MessageItem/MessageItem';
 
+const {height} = Dimensions.get('window');
 const ChattRoom = ({route, navigation}) => {
   const dispatch = useDispatch();
   const {username, image, id} = useSelector(state => state.currentUser);
@@ -59,34 +67,39 @@ const ChattRoom = ({route, navigation}) => {
       style={{flex: 1, backgroundColor: WimitiColors.cWhiteSnow}}
       behavior={Platform.OS === 'ios' ? 'padding' : null}
       keyboardVerticalOffset={Platform.OS === 'ios' ? 90 : 100}>
-      <View style={{backgroundColor: WimitiColors.cWhiteSnow, flex: 1}}>
-        <FlatList
-          inverted
-          disableVirtualization={false}
-          data={uniqueArray([...messagesToBeSent, ...messages])}
-          keyExtractor={keyExtractor}
-          renderItem={({item}) => (
-            <MessageItem
-              item={item}
-              navigation={navigation}
-              currentUsername={username}
-              setReplyMessage={setReplyMessage}
-              user={user}
-            />
-          )}
-          onEndReachedThreshold={5}
-          onEndReached={() => dispatch(fetchUserMessages(username, id))}
-          style={{flex: 1}}
-        />
+      <ImageBackground
+        source={require('../../../../../assets/pattern.png')}
+        style={{height: '100%'}}>
+        {/* <View style={{backgroundColor: WimitiColors.cWhiteSnow, flex: 1}}> */}
+        <View style={{backgroundColor: 'rgba(0,0,0,0.8)', flex: 1}}>
+          <FlatList
+            inverted
+            disableVirtualization={false}
+            data={uniqueArray([...messagesToBeSent, ...messages])}
+            keyExtractor={keyExtractor}
+            renderItem={({item}) => (
+              <MessageItem
+                item={item}
+                navigation={navigation}
+                currentUsername={username}
+                setReplyMessage={setReplyMessage}
+                user={user}
+              />
+            )}
+            onEndReachedThreshold={5}
+            onEndReached={() => dispatch(fetchUserMessages(username, id))}
+            style={{flex: 1}}
+          />
 
-        <ChattInput
-          user={user}
-          currentUsername={username}
-          currentUserImage={image}
-          replyMessage={replyMessage}
-          setReplyMessage={setReplyMessage}
-        />
-      </View>
+          <ChattInput
+            user={user}
+            currentUsername={username}
+            currentUserImage={image}
+            replyMessage={replyMessage}
+            setReplyMessage={setReplyMessage}
+          />
+        </View>
+      </ImageBackground>
     </KeyboardAvoidingView>
   );
 };
