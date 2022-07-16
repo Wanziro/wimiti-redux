@@ -65,9 +65,14 @@ function ChattRoomHeader({user, navigation}) {
           flexDirection: 'row',
           width: 120,
         }}>
-        <View>
-          <Icon name="videocam" size={30} color={WimitiColors.famousBlue} />
-        </View>
+        <Pressable
+          onPress={() => {
+            navigation.navigate('VideoCall', {callee: user});
+          }}>
+          <View>
+            <Icon name="videocam" size={30} color={WimitiColors.famousBlue} />
+          </View>
+        </Pressable>
         <View>
           <Icon name="ios-call" size={25} color={WimitiColors.famousBlue} />
         </View>

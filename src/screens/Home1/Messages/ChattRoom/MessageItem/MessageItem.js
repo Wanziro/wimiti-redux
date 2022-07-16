@@ -407,7 +407,7 @@ function MessageItem({
                             </View>
                             {repliedFile != '' && (
                               <>
-                                {repliedfile?.type?.split('/')[0] ===
+                                {repliedFile?.type?.split('/')[0] ===
                                 'image' ? (
                                   <Image
                                     source={{

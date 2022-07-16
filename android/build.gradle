@@ -11,6 +11,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        jcenter()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:4.2.2")
@@ -41,6 +42,8 @@ allprojects {
         jcenter() {
             content {
                 includeModule("com.yqritc", "android-scalablevideoview")
+                includeModule("org.webrtc", "google-webrtc")
+                includeModule("com.getkeepsafe.relinker", "relinker")
             }
         }
     }

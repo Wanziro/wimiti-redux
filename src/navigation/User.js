@@ -28,15 +28,18 @@ import ChattRoom from '../screens/Home1/Messages/ChattRoom/ChattRoom';
 import ChattRoomHeader from '../screens/Home1/Messages/ChattRoom/ChattRoomHeader/ChattRoomHeader';
 import ChattFilePreview from '../screens/Home1/Messages/ChattFilePreview/ChattFilePreview';
 
-//socket
-window.navigator.userAgent = 'react-native';
-import io from 'socket.io-client';
 import {socketIoServerUrl} from '../Config';
 import {setOnlineUsers} from '../actions/onlineUsers';
 import {addSingleMessage, fetchUserMessages} from '../actions/userMessages';
 import {setSocket} from '../actions/socket';
 import Shorts from '../screens/Home1/Shorts';
 import ShortPreview from '../screens/Home1/Shorts/New/ShortPreview';
+import VideoCall from '../screens/videoCall';
+import {
+  dispatchEmitCallAccepted,
+  dispatchEmitCallRejected,
+  recieveCall,
+} from '../actions/call';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -144,48 +147,6 @@ const HomeTabs1 = ({navigation}) => {
 const User = () => {
   const dispatch = useDispatch();
   const currentUserObj = useSelector(state => state.currentUser);
-  const {socket} = useSelector(state => state.socketReducer);
-  let connectToSocketInterval;
-
-  const handleSocketConnection = () => {
-    if (socket) {
-      if (!socket.connected) {
-        console.log('Not connected to the socket');
-        dispatch(setSocket(io(socketIoServerUrl)));
-      }
-    }
-  };
-
-  //connect to the socket io server
-  useEffect(() => {
-    connectToSocketInterval = setInterval(() => {
-      handleSocketConnection();
-    }, 10000);
-    handleSocketConnection();
-    return () => {
-      clearInterval(connectToSocketInterval);
-    };
-  }, []);
-  //connect to the socket io server
-
-  useEffect(() => {
-    socket?.emit('addUser', currentUserObj.username);
-    socket?.on('getAllOnlineUsers', users => {
-      console.log('all connected users', users);
-      dispatch(setOnlineUsers(users));
-    });
-    socket?.on('getMessage', message => {
-      // console.log('got message', message);
-      dispatch(addSingleMessage(message));
-      dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
-    });
-
-    socket?.on('getMessagesSeen', receiver => {
-      //todo
-      //mark all messages as seen
-      dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
-    });
-  }, [socket]);
 
   return (
     <NavigationContainer>
@@ -344,6 +305,15 @@ const User = () => {
           component={UsersList}
           options={{
             title: 'Select user',
+          }}
+        />
+
+        <Stack.Screen
+          name="VideoCall"
+          component={VideoCall}
+          options={{
+            title: '',
+            headerShown: false,
           }}
         />
 
