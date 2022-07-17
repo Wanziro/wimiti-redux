@@ -65,8 +65,10 @@ function UserContainer() {
     });
     socket?.on('getMessage', message => {
       // console.log('got message', message);
-      dispatch(addSingleMessage(message));
-      dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
+      if (message?.receiver == currentUserObj.username) {
+        dispatch(addSingleMessage(message));
+        dispatch(fetchUserMessages(currentUserObj.username, currentUserObj.id));
+      }
     });
 
     socket?.on('UserAcceptedCall', users => {
