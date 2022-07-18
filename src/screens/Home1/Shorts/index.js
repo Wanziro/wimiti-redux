@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StatusBar, Dimensions, Pressable} from 'react-native';
+import {
+  View,
+  Text,
+  StatusBar,
+  Dimensions,
+  Pressable,
+  Modal,
+} from 'react-native';
 import {launchCamera} from 'react-native-image-picker';
 import WimitiColors from '../../../WimitiColors';
 import Icon from 'react-native-vector-icons/dist/FontAwesome';
@@ -12,12 +19,16 @@ const {width, height} = Dimensions.get('window');
 
 function Shorts({navigation}) {
   const dispatch = useDispatch();
+  const [showCommingSoon, setShowCommingSoon] = useState(true);
   const {shorts, currentViewingIndex, isLoadingShorts, error} = useSelector(
     state => state.shorts,
   );
 
   useEffect(() => {
-    dispatch(fetchShorts());
+    // dispatch(fetchShorts());
+    return () => {
+      setShowCommingSoon(false);
+    };
   }, []);
 
   const handleFileSelect = async () => {
@@ -39,7 +50,7 @@ function Shorts({navigation}) {
         backgroundColor={WimitiColors.black}
         barStyle="light-content"
       />
-      <View
+      {/* <View
         style={{
           flex: 1,
           backgroundColor: WimitiColors.black,
@@ -80,7 +91,25 @@ function Shorts({navigation}) {
             </View>
           </Pressable>
         </View>
+      </View> */}
+      {/* <Modal transparent={true} visible={showCommingSoon}> */}
+      <View
+        style={{
+          flex: 1,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+        }}>
+        <Text style={{color: WimitiColors.white}}>Comming soon!</Text>
+        <Pressable onPress={() => navigation.goBack()}>
+          <View style={{marginTop: 15}}>
+            <Text style={{color: WimitiColors.blue, fontSize: 20}}>
+              Go back
+            </Text>
+          </View>
+        </Pressable>
       </View>
+      {/* </Modal> */}
     </>
   );
 }

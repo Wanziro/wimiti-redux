@@ -11,6 +11,7 @@ import postLikes from './postLikes';
 import postDislikes from './postDislikes';
 import setupPanel from './setupPanel';
 import videoCallReducer from './call';
+import peopleReducer from './people';
 
 const rootReducer = combineReducers({
   currentUser,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   postDislikes,
   setupPanel,
   videoCallReducer,
+  peopleReducer,
 });
 
 export default rootReducer;

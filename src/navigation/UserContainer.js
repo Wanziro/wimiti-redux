@@ -37,20 +37,20 @@ function UserContainer() {
 
   const handleSocketConnection = () => {
     // if (socket) {
-    if (!socket?.connected) {
-      console.log('Not connected to the socket');
-      dispatch(setSocket(io(socketIoServerUrl)));
-    }
+    // if (!socket?.connected) {
+    //   console.log('Not connected to the socket');
+    //   dispatch(setSocket(io(socketIoServerUrl)));
+    // }
     // }
   };
 
   //connect to the socket io server
   useEffect(() => {
     dispatch(setSocket(io(socketIoServerUrl)));
-    connectToSocketInterval = setInterval(() => {
-      handleSocketConnection();
-    }, 10000);
-    handleSocketConnection();
+    // connectToSocketInterval = setInterval(() => {
+    //   handleSocketConnection();
+    // }, 10000);
+    // handleSocketConnection();
     return () => {
       // clearInterval(connectToSocketInterval);
     };

@@ -60,7 +60,7 @@ const Home = ({navigation}) => {
               <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }>
             <Setup navigation={navigation} />
-            <View style={{margin: 10, marginTop: 15}}>
+            {/* <View style={{margin: 10, marginTop: 15}}>
               <TouchableWithoutFeedback
                 onPress={() => navigation.navigate('CreatePost')}>
                 <View
@@ -106,7 +106,7 @@ const Home = ({navigation}) => {
                   </View>
                 </View>
               </TouchableWithoutFeedback>
-            </View>
+            </View> */}
             {/* <Posts /> */}
             <UserPosts
               navigation={navigation}

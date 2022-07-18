@@ -29,10 +29,11 @@ module.exports = {
 
 // production
 // module.exports = {
-//   backendUrl: 'https://wemiti.com/server',
-//   backendPostFilesUrl: 'https://wemiti.com/server/uploads/posts/',
-//   backendUserImagesUrl: 'https://wemiti.com/server/uploads/profile/',
-//   backendChattFilesUrl: 'https://wemiti.com/server/uploads/chatt/',
-//   backendShortVideosUrl: 'https://wemiti.com/server/uploads/shorts/',
+//   backendUrl: 'http://wemiti.com/server',
+//   backendPostFilesUrl: 'http://wemiti.com/server/uploads/posts/',
+//   backendUserImagesUrl: 'http://wemiti.com/server/uploads/profile/',
+//   backendChattFilesUrl: 'http://wemiti.com/server/uploads/chatt/',
+//   backendShortVideosUrl: 'http://wemiti.com/server/uploads/shorts/',
 //   socketIoServerUrl: 'https://wimiti-socket.herokuapp.com/',
+//   callTokenServerUrl: 'https://wimiti-twilio-token.herokuapp.com/',
 // };

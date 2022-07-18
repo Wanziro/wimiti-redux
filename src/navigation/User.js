@@ -6,7 +6,6 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import WimitiColors from '../WimitiColors';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../screens/Home1/Home';
-import People from '../screens/Home1/People/People';
 
 import Icon4 from 'react-native-vector-icons/dist/MaterialIcons';
 import Icon from 'react-native-vector-icons/dist/Ionicons';
@@ -40,6 +39,7 @@ import {
   dispatchEmitCallRejected,
   recieveCall,
 } from '../actions/call';
+import People from '../screens/Home1/People';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -78,14 +78,10 @@ const HomeTabs1 = ({navigation}) => {
         name="Peoples"
         component={People}
         options={{
+          headerTitle: 'Connect with people',
+          headerShown: 'true',
           tabBarIcon: ({focused, color, size}) => {
             return <Icon name="people" color={color} size={size} />;
-          },
-        }}
-        listeners={{
-          tabPress: e => {
-            e.preventDefault();
-            navigation.navigate('People');
           },
         }}
       />
